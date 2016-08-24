@@ -1,5 +1,5 @@
 import pygame, sys
-size=11,11
+size=15,9
 loadfile=None
 pygame.init()
 screen = pygame.display.set_mode((max([size[0],14])*64, size[1]*64+192))
@@ -8,6 +8,7 @@ import Objects
 import Food
 import Salad
 import Sandwich
+import Breakfast
 import Soup
 import Tiles
 import Img
@@ -66,9 +67,9 @@ w=World.EditWorld(size,loadfile)
 clock = pygame.time.Clock()
 selmenu=0
 tilemenus=[[0,1,2]]
-objmenus=[FoodIter(Objects.Counter,[Food.Plate,Salad.SaladBottle,Sandwich.MustardBottle,Sandwich.KetchupBottle,Soup.Pot]),
+objmenus=[FoodIter(Objects.Counter,[Food.Plate,Salad.SaladBottle,Sandwich.MustardBottle,Sandwich.KetchupBottle,Soup.Pot,Breakfast.Pan]),
           MultiIter(Objects.FoodExit,Objects.Returner),
-          FoodIter(Objects.Spawner,[Salad.Cucumber,Salad.Lettuce,Salad.Tomato,Salad.Carrot,Salad.Potato,Sandwich.Bread,Sandwich.Cheese],False),
+          FoodIter(Objects.Spawner,[Salad.Cucumber,Salad.Lettuce,Salad.Tomato,Salad.Carrot,Salad.Potato,Sandwich.Bread,Sandwich.Cheese,Breakfast.Steak],False),
           EditorIter(Objects.Trash),MultiIter(Objects.ChoppingBoard,Objects.Grater,Objects.Hob),
           EditorIter(Objects.Sink),MultiIter(Objects.Button,Objects.Flipper),SpinIter(Objects.ArrowBlock),SpinIter(Objects.ArrowHob),
           SpinIter(Objects.SpawnMan,8),EditorIter(Objects.Wall),SpinIter(Objects.Conveyor)]

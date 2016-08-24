@@ -33,7 +33,7 @@ class ChoppingBoard(Object):
     o3d=4
     mp=0
     def interact(self,world,p):
-        if self.contents and self.contents.choppable:
+        if self.contents and self.contents.choppable and self.contents.state=="normal":
             p.task=self
             self.locked=True
             self.progress=0
@@ -46,7 +46,6 @@ class ChoppingBoard(Object):
                 p.task=False
                 self.locked=False
                 self.contents.state="chopped"
-                self.contents.choppable=False
                 self.progress=None
             elif self.progress%4==3:
                 chop.play()
@@ -55,7 +54,7 @@ class Grater(Object):
     o3d=4
     mp=0
     def interact(self,world,p):
-        if self.contents and self.contents.grateable:
+        if self.contents and self.contents.grateable and self.contents.state=="normal":
             p.task=self
             self.locked=True
             self.progress=0
@@ -68,7 +67,6 @@ class Grater(Object):
                 p.task=False
                 self.locked=False
                 self.contents.state="grated"
-                self.contents.grateable=False
                 self.progress=None
             elif self.progress%4==3:
                 grate.play()
@@ -163,7 +161,12 @@ class Sink(Object):
             p.task = self
             self.locked = True
             self.progress = 0
-            self.mode = "scrub"
+            self.mode = "soupscrub"
+        elif self.contents and self.contents.name == "Pan" and self.contents.burnt:
+            p.task = self
+            self.locked = True
+            self.progress = 0
+            self.mode = "panscrub"
     def tupdate(self,p):
         self.mp+=1
         if self.mp==8:
@@ -174,6 +177,9 @@ class Sink(Object):
                 self.locked=False
                 if self.mode=="clean":
                     self.contents.dirty=False
+                elif self.mode=="panscrub":
+                    self.contents.burnt = False
+                    self.contents.re_img()
                 else:
                     self.contents.contents=None
                     self.contents.re_img()
@@ -221,7 +227,7 @@ class Flipper(Counter):
 class Hob(Counter):
     img=img4("Cooker")
     def can_place(self, item):
-        return item.name=="Pot"
+        return item.name in ("Pot","Pan")
     def on_place(self,world):
         world.reg_updates(self)
     def update(self,world,events):

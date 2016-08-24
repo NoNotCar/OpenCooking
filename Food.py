@@ -4,6 +4,7 @@ class Food(Item):
     utensil = False
     choppable=True
     grateable = True
+    cookable=True
     def __init__(self,state="normal"):
         self.state=state
     @classmethod
@@ -20,10 +21,35 @@ class Food(Item):
             cls.grated_img = Img.img4("Grated" + name)
         except pygame.error:
             cls.grateable = False
+        try:
+            cls.cooked_img = Img.img4("Cooked" + name)
+        except pygame.error:
+            cls.cookable = False
     def maketag(self):
         return self.state+self.__class__.name
     def get_img(self):
-        return self.img if self.state=="normal" else self.chopped_img if self.state=="chopped" else self.grated_img
+        return self.img if self.state=="normal" else self.chopped_img if self.state=="chopped" else self.grated_img if self.state=="grated" else self.cooked_img
+class CookableFood(Food):
+    cookingtime=600
+    burningtime=300
+    progress=None
+    warn=None
+    cookprog=0
+    burnprog=0
+    def heat(self):
+        #Heat the food. Returns true if food changes state
+        if self.cookprog<self.cookingtime:
+            self.cookprog+=1
+            self.progress=self.cookprog*14//self.cookingtime
+            self.warn=False
+            if self.cookprog==self.cookingtime:
+                self.state="cooked"
+                return True
+        elif self.burnprog<self.burningtime:
+            self.burnprog+=1
+            self.warn=True
+        else:
+            return True
 class Plate(Item):
     name="Plate"
     dirty=False
@@ -35,6 +61,11 @@ class Plate(Item):
             if food.name=="Pot" and food.contents and food.contents.q==3 and food.contents.cooked>=540 and not food.contents.is_burnt:
                 self.contents=food.contents
                 food.contents=None
+                self.re_img()
+                food.re_img()
+            elif food.name=="Pan" and food.contents:
+                self.contents = food.contents
+                food.contents = None
                 self.re_img()
                 food.re_img()
             return False
@@ -61,7 +92,8 @@ class Plate(Item):
 import Salad
 import Sandwich
 import Soup
+import Breakfast
 
-items=[Plate]+Salad.items+Sandwich.items+Soup.items
+items=[Plate]+Salad.items+Sandwich.items+Soup.items+Breakfast.items
 for i in items:
     i.init()

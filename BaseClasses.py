@@ -64,6 +64,7 @@ class Item(object):
     name="Item"
     choppable=False
     grateable=False
+    cookable=False
     contents=None
     is_supply=False
     utensil=True

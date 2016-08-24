@@ -19,7 +19,7 @@ class Player(Object):
         self.col=col
     def update(self, world, events):
         bpress = self.c.get_buttons(events)
-        sinv=self.inv
+        sinv=self.tag_or_none()
         soverride=False
         if not self.moving and not self.task:
             bpressc = self.c.get_pressed()
@@ -49,12 +49,14 @@ class Player(Object):
             if bpress[1]:
                 if o and not o.locked:
                     o.interact(world,self)
-            if sinv is not self.inv and not soverride:
+            if sinv != self.tag_or_none() and not soverride:
                 pick.play()
-            if sinv is not self.inv:
+            if sinv != self.tag_or_none():
                 self.re_himg()
         elif self.task:
             self.task.tupdate(self)
+    def tag_or_none(self):
+        return None if self.inv is None else self.inv.maketag()
     def get_img(self,world):
         return self.imgs[self.d]
     def re_himg(self):

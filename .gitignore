@@ -138,4 +138,5 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 .idea/
+HS.sav
 *.sav

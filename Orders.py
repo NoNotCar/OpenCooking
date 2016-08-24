@@ -2,7 +2,7 @@ import Img
 import Food
 import pygame
 orderframes=[Img.img("Order"+str(n)) for n in range(1,3)]
-states={s:Img.img("State"+s.capitalize()) for s in ["chopped","grated","liquid"]}
+states={s:Img.img("State"+s.capitalize()) for s in ["chopped","grated","liquid","cooked"]}
 class Order(object):
     def __init__(self,components):
         self.c=[]

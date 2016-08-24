@@ -154,6 +154,7 @@ while True:
     time=10800
     olduprects=[]
     breaking=False
+    pausing=False
     while not breaking:
         for rect in olduprects:
             screen.fill((100, 100, 100),rect)
@@ -162,6 +163,8 @@ while True:
         for e in es:
             if check_exit(e,True):
                 breaking=True
+            elif e.type==pygame.KEYDOWN and e.key==pygame.K_p:
+                pausing=True
         w.update(es)
         w.render(subsurf)
         if time<0:
@@ -180,6 +183,18 @@ while True:
         for o in w.orders:
             uprects.append(o.render(screen,(ox,2)))
             ox+=2+o.img.get_rect().width
+        if pausing:
+            Img.bcentre(tfont,"PAUSED",screen)
+            pygame.display.flip()
+            while pausing:
+                es = pygame.event.get()
+                for e in es:
+                    if check_exit(e, True):
+                        breaking = True
+                        pausing=False
+                    elif e.type == pygame.KEYDOWN and e.key == pygame.K_p:
+                        pausing = False
+                clock.tick(60)
         if speedy:
             pygame.display.update(olduprects+uprects)
         else:

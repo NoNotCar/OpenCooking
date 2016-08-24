@@ -3,6 +3,7 @@ from random import randint, choice
 import Salad
 import Sandwich
 import Soup
+import Breakfast
 def new_order(level,world):
     return Order(orderers[world-1](level))
 def world_1(level):
@@ -33,6 +34,8 @@ def world_1(level):
 def world_2(level):
     if level in [3,4]:
         return world_2(2) if randint(0,1) else world_1(10)
+    if level==9:
+        return world_2(2) if randint(0,2) else [Breakfast.Steak("cooked")]
     soupitems=[]
     soupings=[Salad.Cucumber,Salad.Tomato]
     if level>1:
