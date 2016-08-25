@@ -50,6 +50,10 @@ def musplay(fil,loops=-1):
         pygame.mixer.music.load(np(loc+"EMX/Menu/" + fil[4:]+".ogg"))
     elif fil[:4]=="CEMX":
         pygame.mixer.music.load(np(loc + "EMX/Cooking/" + fil[4:] + ".ogg"))
+    elif fil[:4] == "MMUS":
+        pygame.mixer.music.load(np(loc + "Music/Menu/" + fil[4:] + ".ogg"))
+    elif fil[:4] == "CMUS":
+        pygame.mixer.music.load(np(loc + "Music/Cooking/" + fil[4:] + ".ogg"))
     else:
         pygame.mixer.music.load(np(loc+"Music/" + fil+".ogg"))
     pygame.mixer.music.play(loops)
@@ -171,19 +175,35 @@ def rot_center(image, angle):
 blank64=img4("Trans")
 memxs = os.listdir(np(loc+"EMX/Menu/"))
 cemxs = os.listdir(np(loc+"EMX/Cooking/"))
+mmusics=os.listdir(np(loc+"Music/Menu/"))
+cmusics=os.listdir(np(loc+"Music/Cooking/"))
 memix=[]
 cemix=[]
+mmus=[]
+cmus=[]
 for emx in memxs:
     if emx[-4:] == ".ogg":
         memix.append("MEMX"+emx[:-4])
 for emx in cemxs:
     if emx[-4:] == ".ogg":
         cemix.append("CEMX"+emx[:-4])
+for mus in mmusics:
+    if mus[-4:] == ".ogg":
+        mmus.append("MMUS"+mus[:-4])
+for mus in cmusics:
+    if mus[-4:] == ".ogg":
+        cmus.append("CMUS"+mus[:-4])
 class DJ(object):
     def __init__(self):
-        self.songs=memix
+        if memix:
+            self.songs=memix
+        else:
+            self.songs=mmus
     def switch(self):
-        self.songs=cemix
+        if cemix:
+            self.songs=cemix
+        else:
+            self.songs=cmus
         pygame.mixer.music.stop()
         musplay(choice(self.songs), 1)
     def update(self):
