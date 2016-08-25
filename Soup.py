@@ -29,7 +29,7 @@ class Soup(Item):
     def add(self,food):
         self.contents.append(food)
         self.colours.append(food.soupcolour)
-        if not self.chunks and food.scimg:
+        if not self.chunks and food.scimg and food.state=="chopped":
             self.chunks=food.scimg
         self.colour=tuple([sum([c[n] for c in self.colours])//len(self.colours) for n in range(3)])
         self.q+=1

@@ -1,9 +1,10 @@
 from Food import Food
+from Breakfast import Steak
 import Sandwich
 import pygame
 import Img
 from BaseClasses import Item
-burgeritems=["Steak"]+Sandwich.sandwichitems
+burgeritems=["Steak","Chicken"]+Sandwich.sandwichitems
 class Burger(Food):
     topped=False
     simg=None
@@ -52,4 +53,7 @@ class Burger(Food):
         return "Burger:" + ",".join([c.maketag() for c in sorted(self.contents)]) + ("T" if self.topped else "uT")
 class BunTop(Food):
     pass
-items=[BunTop]
+class Chicken(Steak):
+    pimg = Img.img4("ChickenPatty")
+    cpimg = Img.img4("CookedChickenPatty")
+items=[BunTop,Chicken]

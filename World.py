@@ -18,6 +18,7 @@ class World(object):
     def __init__(self,ps,n):
         self.ps=ps
         self.uos=[]
+        self.ucs=[]
         self.level=(n-1)%10+1
         self.world=(n-1)//10+1
         manualspawn=False
@@ -36,6 +37,8 @@ class World(object):
                     except IndexError:
                         self.dest(obj)
                     manualspawn=True
+                if obj and obj.ticks and obj.__class__ not in self.ucs:
+                    self.ucs.append(obj.__class__)
         self.size=len(self.w),len(self.w[0])
         if not manualspawn:
             for n,p in enumerate(ps):
@@ -46,6 +49,8 @@ class World(object):
     def update(self,events):
         self.anitick+=1
         self.anitick%=60
+        for uc in self.ucs:
+            uc.tick()
         for o in self.uos[:]:
             o.update(self,events)
         for r in self.w:

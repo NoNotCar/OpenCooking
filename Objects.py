@@ -326,9 +326,10 @@ class ArrowHob(Hob):
         return item.name=="Pot"
 class Conveyor(Counter):
     anitick=0
-    updates = True
+    updates = False
     cconv=None
     name="Conv"
+    ticks = True
     @classmethod
     def init(cls):
         convs = imgrot(img4("Conv"))
@@ -344,7 +345,10 @@ class Conveyor(Counter):
                 rimgs.append(i)
             cls.imgs.append(rimgs)
         cls.img=cls.imgs[0]
-
+    @classmethod
+    def tick(cls):
+        cls.anitick+=1
+        cls.anitick%=54
     def __init__(self, x, y, d=0):
         self.place(x, y)
         self.dir = D.get_dir(d)
@@ -368,6 +372,7 @@ class Conveyor(Counter):
                             self.contents=None
                             self.cconv.fx=-self.fx
                             self.cconv.fy=-self.fy
+                            self.cconv.on_place(world)
                             self.on_take(world)
                     else:
                         self.fx += self.dir[0]
@@ -389,9 +394,8 @@ class Conveyor(Counter):
                             self.fy += self.dir[1]
                     else:
                         self.f_normalise()
-
-        self.anitick+=1
-        self.anitick%=56
+        else:
+            world.del_updates(self)
     def get_img(self,world):
         return self.imgs[self.d][self.anitick//4]
     def f_norm(self):
@@ -415,6 +419,9 @@ class Conveyor(Counter):
     def on_take(self,world):
         self.fx=0
         self.fy=0
+        world.del_updates(self)
+    def on_place(self,world):
+        world.reg_updates(self)
 class FloorIngs(Object):
     img=blank64
     def __init__(self,contents):

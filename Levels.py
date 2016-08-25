@@ -61,8 +61,13 @@ def world_2(level):
 def world_3(level):
     oc=[]
     oc.append(Burger.Burger())
-    oc.append(Breakfast.Steak("hammered+cooked"))
+    if level==1 or randint(0,1):
+        oc.append(Breakfast.Steak("hammered+cooked"))
+    else:
+        oc.append(Burger.Chicken("hammered+cooked"))
     extras=[Salad.Lettuce,Salad.Tomato,Sandwich.Cheese,Sandwich.Ketchup]
+    if level>1:
+        extras.extend([Salad.Cucumber,Sandwich.Mustard])
     for e in extras:
         if randint(0,1):
             if e.name=="Ketchup":

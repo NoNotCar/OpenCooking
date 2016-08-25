@@ -15,6 +15,7 @@ class Object(object):
     progress=None
     locked=False
     warn=False
+    ticks=False
     fx=0
     fy=0
     contents_render_order_override=False

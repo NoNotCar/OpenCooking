@@ -57,7 +57,7 @@ class Plate(Item):
     def combine(self, food):
         if self.dirty:
             return False
-        if food.utensil:
+        if food.utensil and not self.contents:
             if food.name=="Pot" and food.contents and food.contents.q==3 and food.contents.cooked>=540 and not food.contents.is_burnt:
                 self.contents=food.contents
                 food.contents=None
@@ -77,6 +77,7 @@ class Plate(Item):
             if self.contents.pcombine(food,self):
                 self.re_img()
                 return True
+            self.re_img()
     def re_img(self):
         self.img = pygame.Surface((64, 64 + self.contents.o3d*4), pygame.SRCALPHA, 32).convert_alpha()
         self.img.blit(self.__class__.img,(0,self.contents.o3d*4))
