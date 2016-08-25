@@ -1,12 +1,8 @@
 __author__ = 'NoNotCar'
 import pygame, sys
-speedy=False
 pygame.init()
 pygame.font.init()
-if not speedy:
-    screen = pygame.display.set_mode((1920, 1080), pygame.FULLSCREEN|pygame.DOUBLEBUF)
-else:
-    screen = pygame.display.set_mode((1920,1080),pygame.FULLSCREEN)
+screen = pygame.display.set_mode((1920,1080),pygame.FULLSCREEN)
 screen.convert()
 import Img
 import Controllers
@@ -20,7 +16,7 @@ clock = pygame.time.Clock()
 tickimg=Img.img4("Tick")
 crossimg=Img.img4("Null")
 cols=((255,0,0),(0,255,0),(0,0,255),(255,255,0),(255,0,255),(0,255,255),(255,128,0),(255,128,255))
-men=("Man","FMan","TMan","SMan","ManBot","ManChef","ManBlack","Slime","Penguin","Woman")
+men=("Man","FMan","TMan","SMan","ManBot","ManChef","ManBlack","Slime","Penguin","Woman","CatThing")
 pimgs=[[Img.new_man(mt,col)[2] for col in cols] for mt in men]
 breaking = False
 try:
@@ -195,16 +191,15 @@ while True:
                     elif e.type == pygame.KEYDOWN and e.key == pygame.K_p:
                         pausing = False
                 clock.tick(60)
-        if speedy:
-            pygame.display.update(olduprects+uprects)
+        pygame.display.update(olduprects+uprects)
+        """if dt < 60:
+            dt += 1
         else:
-            pygame.display.flip()
-        clock.tick(60)
-        """if dt<60:
-            dt+=1
-        else:
-            dt=0
+            dt = 0
             print clock.get_fps()"""
+        if clock.get_rawtime()<=3:
+            pygame.time.wait(8)
+        clock.tick(60)
         dj.update()
         olduprects=uprects
     if not breaking:
