@@ -151,7 +151,7 @@ while True:
     timesurf=screen.subsurface(timerect)
     screen.fill((100, 100, 100))
     pygame.display.flip()
-    time=10800
+    time=14400
     olduprects=[]
     breaking=False
     pausing=False

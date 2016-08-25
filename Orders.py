@@ -2,7 +2,7 @@ import Img
 import Food
 import pygame
 orderframes=[Img.img("Order"+str(n)) for n in range(1,3)]
-states={s:Img.img("State"+s.capitalize()) for s in ["chopped","grated","liquid","cooked"]}
+states={s:Img.img("State"+s.capitalize()) for s in ["chopped","grated","liquid","cooked","hammered+cooked"]}
 class Order(object):
     def __init__(self,components):
         self.c=[]
@@ -36,14 +36,14 @@ class Order(object):
                     self.img.blit(states[c.state], (n*34, 104))
         self.plate=Food.Plate()
         for c in components:
-            assert self.plate.combine(c), "INVALID RECIPE: "+str(components)
+            assert self.plate.combine(c), "INVALID RECIPE: "+str(components)+" OFFENDING INGREDIENT: "+str(c)
 
         if len(self.c)<3:
             subsurf = self.img.subsurface(pygame.Rect(3,8,64,64))
         else:
             subsurf = self.img.subsurface(pygame.Rect(3+17*len(self.c)-34, 8,64,64))
         subsurf.blit(self.plate.get_img(),(0,-self.plate.o3d*4))
-        self.time=900+len(self.c)*900
+        self.time=int((900+len(self.c)*900)*self.plate.contents.ordermultiplier)
         self.stime=self.time
         self.img=Img.xn(self.img,2)
     def render(self,screen,dest):

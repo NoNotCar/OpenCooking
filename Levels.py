@@ -4,6 +4,7 @@ import Salad
 import Sandwich
 import Soup
 import Breakfast
+import Burger
 def new_order(level,world):
     return Order(orderers[world-1](level))
 def world_1(level):
@@ -57,4 +58,19 @@ def world_2(level):
             else:
                 soupitems.append(ch("chopped"))
     return [Soup.Soup.order_init(soupitems)]+([Sandwich.Cheese("grated")] if level>1 and randint(0,1) else [])
-orderers=[world_1,world_2]
+def world_3(level):
+    oc=[]
+    oc.append(Burger.Burger())
+    oc.append(Breakfast.Steak("hammered+cooked"))
+    extras=[Salad.Lettuce,Salad.Tomato,Sandwich.Cheese,Sandwich.Ketchup]
+    for e in extras:
+        if randint(0,1):
+            if e.name=="Ketchup":
+                oc.append(e("liquid"))
+            elif e.name=="Cheese":
+                oc.append(e("grated"))
+            else:
+                oc.append(e("chopped"))
+    oc.append(Burger.BunTop())
+    return oc
+orderers=[world_1,world_2,world_3]

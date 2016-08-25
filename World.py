@@ -92,12 +92,14 @@ class World(object):
                         crenders.append(o)
                     elif o.contents:
                         screen.blit(o.contents.get_img(),(x*64+o.xoff+o.fx,y*64+o.yoff+64-o.o3d*4+o.fy-o.contents.o3d*4))
-                    if o.progress is not None:
-                        screen.blit((Img.progresses,Img.wprogresses)[o.warn][0 if o.warn and self.anitick//15%2 else o.progress],(x*64+o.xoff,y*64+o.yoff+40-o.o3d*4))
                     if o in self.ps and o.himg and o.d:
                         screen.blit(o.himg,(x*64+o.xoff+16+(16*(2-o.d)),y*64+o.yoff+64-o.o3d*4+24))
         for o in crenders:
             screen.blit(o.contents.get_img(),(o.x * 64 + o.xoff + o.fx, o.y * 64 + o.yoff + 64 - o.o3d * 4 + o.fy - o.contents.o3d * 4))
+            if o.progress is not None:
+                screen.blit(
+                    (Img.progresses, Img.wprogresses)[o.warn][0 if o.warn and self.anitick // 15 % 2 else o.progress],
+                    (o.x * 64 + o.xoff, o.y * 64 + o.yoff + 40 - o.o3d * 4))
     def get_t(self,x,y):
         return Tiles.tiles[self.t[x][y]]
     def get_o(self,x,y):

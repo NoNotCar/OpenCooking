@@ -43,7 +43,7 @@ class CookableFood(Food):
             self.progress=self.cookprog*14//self.cookingtime
             self.warn=False
             if self.cookprog==self.cookingtime:
-                self.state="cooked"
+                self.set_state("cooked")
                 return True
         elif self.burnprog<self.burningtime:
             self.burnprog+=1
@@ -93,7 +93,8 @@ import Salad
 import Sandwich
 import Soup
 import Breakfast
+import Burger
 
-items=[Plate]+Salad.items+Sandwich.items+Soup.items+Breakfast.items
+items=[Plate]+Salad.items+Sandwich.items+Soup.items+Breakfast.items+Burger.items
 for i in items:
     i.init()

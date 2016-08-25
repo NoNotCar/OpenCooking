@@ -4,6 +4,7 @@ import Food
 import Direction as D
 import pygame
 chop=sndget("chop")
+hit=sndget("hit")
 wash=sndget("wash")
 money=sndget("money")
 voids=[sndget("void"),sndget("voidimp")]
@@ -74,6 +75,27 @@ class Grater(Object):
                 self.progress=None
             elif self.progress%4==3:
                 grate.play()
+class HammerBoard(Object):
+    img=img4("HittingBoard")
+    o3d=4
+    mp=0
+    def interact(self,world,p):
+        if self.contents and self.contents.hammerable and self.contents.state=="normal":
+            p.task=self
+            self.locked=True
+            self.progress=0
+    def tupdate(self,p):
+        self.mp+=1
+        if self.mp==5:
+            self.mp=0
+            self.progress+=1
+            if self.progress==15:
+                p.task=False
+                self.locked=False
+                self.contents.set_state("hammered")
+                self.progress=None
+            elif self.progress%4==3:
+                hit.play()
 class Trash(Object):
     img=img4("Trash")
     o3d = 4

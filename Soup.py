@@ -13,6 +13,7 @@ class Soup(Item):
     is_burnt=False
     topping=None
     chunks=None
+    ordermultiplier = 1.5
     def __init__(self,food=None):
         self.colours=[]
         self.contents=[]
@@ -81,4 +82,8 @@ class Pot(Item):
             self.contents.heat()
             if self.contents.burnt==360:
                 self.re_img()
+    def maketag(self):
+        if self.contents:
+            return "Pot:"+self.contents.maketag()
+        return "Pot"
 items=[Pot]

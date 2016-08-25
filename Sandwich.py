@@ -8,6 +8,7 @@ class Bread(Food):
     topped=False
     simg=None
     state="normal"
+    ordermultiplier = 0.6
     def __init__(self):
         self.contents=[]
     def combine(self, food):

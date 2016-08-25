@@ -73,6 +73,7 @@ class Item(object):
     choppable=False
     grateable=False
     cookable=False
+    hammerable=False
     contents=None
     is_supply=False
     utensil=True
@@ -80,6 +81,7 @@ class Item(object):
     scimg=None
     o3d=0
     state="normal"
+    ordermultiplier=1
     @classmethod
     def init(cls):
         cls.name = cls.__name__
@@ -93,6 +95,8 @@ class Item(object):
         return self.__class__.name
     def supply(self):
         return self
+    def set_state(self,state):
+        self.state=state
     def __eq__(self, other):
         try:
             return self.maketag()==other.maketag()
