@@ -74,6 +74,7 @@ class World(object):
             savobj = pickle.load(sf)
             self.t = savobj.t
             self.w = savobj.w
+            self.size = len(self.w), len(self.w[0])
     def render(self,screen):
         for x in range(self.size[0]):
             screen.blit(backwall,(x*64,0))

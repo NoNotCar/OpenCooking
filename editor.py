@@ -1,6 +1,6 @@
 import pygame, sys
 size=15,9
-loadfile=None
+loadfile="2-9"
 pygame.init()
 screen = pygame.display.set_mode((max([size[0],16])*64, size[1]*64+192))
 import World
@@ -64,6 +64,8 @@ class SpinIter(EditorIter):
     def get_img(self,world):
         return self.orender.get_img(world),self.obj.o3d
 w=World.EditWorld(size,loadfile)
+if loadfile:
+    size=w.size
 clock = pygame.time.Clock()
 selmenu=0
 tilemenus=[[0,1,2]]
