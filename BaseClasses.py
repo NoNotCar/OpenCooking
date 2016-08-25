@@ -40,18 +40,26 @@ class Object(object):
             self.xoff=0
             self.yoff=0
             self.moving=False
+            self.locked=False
     def move(self,dx,dy,world):
-        tx=self.x+dx
-        ty=self.y+dy
-        if world.is_clear(tx,ty,self.name=="Player"):
-            world.move(self,tx,ty)
-            self.moving=True
-            self.xoff= -dx*64
-            self.yoff= -dy*64
-            self.dx=dx
-            self.dy=dy
+        if self.can_move(dx,dy,world):
+            self.ex_move(dx,dy,world)
             return True
         return False
+    def can_move(self,dx,dy,world):
+        tx = self.x + dx
+        ty = self.y + dy
+        return world.is_clear(tx, ty, self.name == "Player") and not self.locked
+    def ex_move(self,dx,dy,world):
+        tx = self.x + dx
+        ty = self.y + dy
+        world.move(self, tx, ty)
+        self.moving = True
+        self.xoff = -dx * 64
+        self.yoff = -dy * 64
+        self.dx = dx
+        self.dy = dy
+        self.locked=True
     def interact(self,world,p):
         pass
     def on_place(self,world):

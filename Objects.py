@@ -14,6 +14,10 @@ class Counter(Object):
     def __init__(self,x,y,contents=None):
         self.contents=contents
         self.place(x,y)
+class FixedCounter(Counter):
+    img=img4("FixedBlock")
+    name="Fixed"
+    fy=-4
 class Wall(Object):
     img=img4("Wall")
     o3d=8
@@ -201,10 +205,38 @@ class ArrowBlock(Object):
     def update(self,world,events):
         if not self.moving:
             dx,dy=self.dir if world.button else D.anti(self.dir)
-            if self.move(dx,dy,world):
-                self.locked=True
-            else:
-                self.locked=False
+            self.move(dx,dy,world)
+    def get_img(self,world):
+        return self.imgs[self.d] if world.button else self.dimgs[self.d]
+class MultiArrowBlock(ArrowBlock):
+    imgs=imgstrip4f("ArrowBlockAttached",16)
+    img=imgs[0]
+    dimgs=[colcopy(i,(0,255,255),(0,100,100)) for i in imgs]
+    eup=False
+    init=False
+    def __init__(self,x,y,d=0):
+        self.place(x,y)
+        self.dir=D.get_dir(d)
+        self.d=d
+    def update(self,world,events):
+        if not self.init:
+            tx,ty=self.x,self.y
+            self.blockchain=[]
+            while True:
+                tx,ty=D.offsetdxy(D.rotdir(self.dir,1),tx,ty)
+                if not world.in_world(tx,ty):
+                    break
+                o=world.get_o(tx,ty)
+                if not o or o.name=="Fixed":
+                    break
+                self.blockchain.append(o)
+            self.init=True
+        dx,dy=self.dir if world.button else D.anti(self.dir)
+        if not self.moving and self.can_move(dx,dy,world):
+            if all([o.can_move(dx,dy,world) for o in self.blockchain]):
+                self.ex_move(dx,dy,world)
+                for o in self.blockchain:
+                    o.ex_move(dx,dy,world)
     def get_img(self,world):
         return self.imgs[self.d] if world.button else self.dimgs[self.d]
 class Button(Counter):

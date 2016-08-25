@@ -2,7 +2,7 @@ import pygame, sys
 size=15,9
 loadfile=None
 pygame.init()
-screen = pygame.display.set_mode((max([size[0],14])*64, size[1]*64+192))
+screen = pygame.display.set_mode((max([size[0],16])*64, size[1]*64+192))
 import World
 import Objects
 import Food
@@ -72,7 +72,7 @@ objmenus=[FoodIter(Objects.Counter,[Food.Plate,Salad.SaladBottle,Sandwich.Mustar
           FoodIter(Objects.Spawner,[Salad.Cucumber,Salad.Lettuce,Salad.Tomato,Salad.Carrot,Salad.Potato,Sandwich.Bread,Sandwich.Cheese,Breakfast.Steak],False),
           EditorIter(Objects.Trash),MultiIter(Objects.ChoppingBoard,Objects.Grater,Objects.Hob),
           EditorIter(Objects.Sink),MultiIter(Objects.Button,Objects.Flipper),SpinIter(Objects.ArrowBlock),SpinIter(Objects.ArrowHob),
-          SpinIter(Objects.SpawnMan,8),EditorIter(Objects.Wall),SpinIter(Objects.Conveyor)]
+          SpinIter(Objects.SpawnMan,8),EditorIter(Objects.Wall),SpinIter(Objects.Conveyor),SpinIter(Objects.MultiArrowBlock),EditorIter(Objects.FixedCounter)]
 seltiles=[0 for _ in tilemenus]
 while True:
     kmods=pygame.key.get_mods()

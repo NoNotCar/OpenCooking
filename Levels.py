@@ -36,6 +36,8 @@ def world_2(level):
         return world_2(2) if randint(0,1) else world_1(10)
     if level==9:
         return world_2(2) if randint(0,2) else [Breakfast.Steak("cooked")]
+    if level==10:
+        return world_2(9) if randint(0,1) else world_1(10)
     soupitems=[]
     soupings=[Salad.Cucumber,Salad.Tomato]
     if level>1:

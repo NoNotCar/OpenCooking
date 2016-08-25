@@ -19,7 +19,7 @@ class World(object):
         self.ps=ps
         self.uos=[]
         self.level=(n-1)%10+1
-        self.world=n//10+1
+        self.world=(n-1)//10+1
         manualspawn=False
         self.load("%s-%s"%(str((n-1)//10+1),str((n-1)%10+1)))
         for r in self.w:
@@ -48,8 +48,10 @@ class World(object):
         self.anitick%=60
         for o in self.uos[:]:
             o.update(self,events)
-            if o.moving:
-                o.mupdate(self)
+        for r in self.w:
+            for o in r:
+                if o and o.moving:
+                    o.mupdate(self)
         for o in self.orders[:]:
             o.time-=1
             if o.time==0:

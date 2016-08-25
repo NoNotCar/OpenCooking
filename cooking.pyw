@@ -20,7 +20,7 @@ clock = pygame.time.Clock()
 tickimg=Img.img4("Tick")
 crossimg=Img.img4("Null")
 cols=((255,0,0),(0,255,0),(0,0,255),(255,255,0),(255,0,255),(0,255,255),(255,128,0),(255,128,255))
-men=("Man","FMan","TMan","SMan","ManBot","ManChef","ManBlack")
+men=("Man","FMan","TMan","SMan","ManBot","ManChef","ManBlack","Slime","Penguin")
 pimgs=[[Img.new_man(mt,col)[2] for col in cols] for mt in men]
 breaking = False
 try:

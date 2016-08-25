@@ -17,3 +17,5 @@ def offset(d,e):
     return e.x+dire[0],e.y+dire[1]
 def offsetd(d,e):
     return e.x+d[0],e.y+d[1]
+def offsetdxy(d,x,y):
+    return x + d[0], y + d[1]
