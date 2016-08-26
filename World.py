@@ -6,7 +6,6 @@ import pickle
 from random import randint
 cashfont=Img.fload("cool",32)
 bcfont=Img.fload("cool",64)
-backwall=Img.img4("BackWall")
 fail=Img.sndget("fail")
 button=Img.sndget("button")
 class World(object):
@@ -15,6 +14,7 @@ class World(object):
     washing=False
     button=False
     anitick=0
+    dark=False
     def __init__(self,ps,n):
         self.ps=ps
         self.uos=[]
@@ -39,6 +39,9 @@ class World(object):
                     manualspawn=True
                 if obj and obj.ticks and obj.__class__ not in self.ucs:
                     self.ucs.append(obj.__class__)
+                if obj and not obj.exists:
+                    self.dest(obj)
+                    self.uos.append(obj)
         self.size=len(self.w),len(self.w[0])
         if not manualspawn:
             for n,p in enumerate(ps):
@@ -81,30 +84,40 @@ class World(object):
             self.w = savobj.w
             self.size = len(self.w), len(self.w[0])
     def render(self,screen):
+        if self.dark:
+            screen.fill((0,0,0))
+            return None
         for x in range(self.size[0]):
-            screen.blit(backwall,(x*64,0))
+            screen.blit(self.get_t(x,0).backwall,(x*64,0))
             for y in range(self.size[1]):
                 screen.blit(self.get_t(x,y).img,(x*64,y*64+64))
-        crenders=[]
+        corenders=[]
+        prenders=[]
         for y in range(self.size[1]):
             for x in range(self.size[0]):
                 o=self.get_o(x,y)
                 if o:
                     if o in self.ps and o.himg and not o.d:
                         screen.blit(o.himg, (x * 64 + o.xoff + 16, y * 64 + o.yoff + 64 - o.o3d * 4 + 24))
-                    screen.blit(o.get_img(self),(x*64+o.xoff,y*64+o.yoff+64-o.o3d*4))
-                    if o.contents and not o.contents_render_order_override:
-                        crenders.append(o)
-                    elif o.contents:
-                        screen.blit(o.contents.get_img(),(x*64+o.xoff+o.fx,y*64+o.yoff+64-o.o3d*4+o.fy-o.contents.o3d*4))
+                    if o.img:
+                        screen.blit(o.get_img(self),(x*64+o.xoff,y*64+o.yoff+64-o.o3d*4))
+                    if o.contents:
+                        corenders.append((o,"c"))
+                    if o.progress is not None:
+                        prenders.append(o)
+                    if o.overimg:
+                        corenders.append((o,"o"))
                     if o in self.ps and o.himg and o.d:
                         screen.blit(o.himg,(x*64+o.xoff+16+(16*(2-o.d)),y*64+o.yoff+64-o.o3d*4+24))
-        for o in crenders:
-            screen.blit(o.contents.get_img(),(o.x * 64 + o.xoff + o.fx, o.y * 64 + o.yoff + 64 - o.o3d * 4 + o.fy - o.contents.o3d * 4))
-            if o.progress is not None:
-                screen.blit(
-                    (Img.progresses, Img.wprogresses)[o.warn][0 if o.warn and self.anitick // 15 % 2 else o.progress],
-                    (o.x * 64 + o.xoff, o.y * 64 + o.yoff + 40 - o.o3d * 4))
+        for o,t in corenders:
+            if t=="c":
+                screen.blit(o.contents.get_img(),(o.x * 64 + o.xoff + o.fx, o.y * 64 + o.yoff + 64 - o.o3d * 4 + o.fy - o.contents.o3d * 4))
+            else:
+                screen.blit(o.overimg, (o.x * 64 + o.xoff, o.y * 64 + o.yoff + 64 - o.over3d * 4))
+        for o in prenders:
+            screen.blit(
+                (Img.progresses, Img.wprogresses)[o.warn][0 if o.warn and self.anitick // 15 % 2 else o.progress],
+                (o.x * 64 + o.xoff, o.y * 64 + o.yoff + 40 - o.o3d * 4))
     def get_t(self,x,y):
         return Tiles.tiles[self.t[x][y]]
     def get_o(self,x,y):
@@ -114,7 +127,7 @@ class World(object):
     def in_world(self,x,y):
         return 0<=x<self.size[0] and 0<=y<self.size[1]
     def is_clear(self,x,y,p=False):
-        return self.in_world(x,y) and not self.w[x][y] and not (p and not self.get_t(x,y).ppassable)
+        return self.in_world(x,y) and not self.w[x][y] and self.get_t(x,y).passable and not (p and not self.get_t(x,y).ppassable)
     def spawn(self,o):
         self.w[o.x][o.y]=o
         if o.updates:

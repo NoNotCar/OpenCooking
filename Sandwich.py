@@ -17,7 +17,7 @@ class Bread(Food):
                 self.contents.append(food)
                 self.re_img()
                 return True
-            elif food.name=="Bread":
+            elif food.name=="Bread" and self.contents:
                 self.topped=True
                 self.re_img()
                 return True

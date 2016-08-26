@@ -1,10 +1,12 @@
 import Img
 class Object(object):
     img=None
+    overimg=None
     speed=4
     xoff,yoff=(0,0)
     moving=False
     o3d=0
+    over3d=0
     name="Object"
     updates=False
     dx=0
@@ -16,9 +18,9 @@ class Object(object):
     locked=False
     warn=False
     ticks=False
+    exists=True
     fx=0
     fy=0
-    contents_render_order_override=False
     def __init__(self,x,y):
         self.place(x,y)
     def place(self,x,y):

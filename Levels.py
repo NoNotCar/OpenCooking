@@ -59,9 +59,14 @@ def world_2(level):
                 soupitems.append(ch("chopped"))
     return [Soup.Soup.order_init(soupitems)]+([Sandwich.Cheese("grated")] if level>1 and randint(0,1) else [])
 def world_3(level):
+    if level==4:
+        return world_3(1) if randint(0,1) else world_1(1)
     oc=[]
     oc.append(Burger.Burger())
-    if level==1 or randint(0,1):
+    if level==3 and not randint(0,2):
+        oc.append(Breakfast.Steak("hammered+cooked"))
+        oc.append(Burger.Chicken("hammered+cooked"))
+    elif level==1 or randint(0,1):
         oc.append(Breakfast.Steak("hammered+cooked"))
     else:
         oc.append(Burger.Chicken("hammered+cooked"))
@@ -69,8 +74,8 @@ def world_3(level):
     if level>1:
         extras.extend([Salad.Cucumber,Sandwich.Mustard])
     for e in extras:
-        if randint(0,1):
-            if e.name=="Ketchup":
+        if not randint(0,2):
+            if e.name in ["Ketchup","Mustard"]:
                 oc.append(e("liquid"))
             elif e.name=="Cheese":
                 oc.append(e("grated"))
@@ -79,3 +84,5 @@ def world_3(level):
     oc.append(Burger.BunTop())
     return oc
 orderers=[world_1,world_2,world_3]
+haunted=[(3,4)]
+outdoors=[(3,5)]

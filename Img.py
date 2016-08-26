@@ -46,16 +46,7 @@ def imgrot(i):
 
 
 def musplay(fil,loops=-1):
-    if fil[:4]=="MEMX":
-        pygame.mixer.music.load(np(loc+"EMX/Menu/" + fil[4:]+".ogg"))
-    elif fil[:4]=="CEMX":
-        pygame.mixer.music.load(np(loc + "EMX/Cooking/" + fil[4:] + ".ogg"))
-    elif fil[:4] == "MMUS":
-        pygame.mixer.music.load(np(loc + "Music/Menu/" + fil[4:] + ".ogg"))
-    elif fil[:4] == "CMUS":
-        pygame.mixer.music.load(np(loc + "Music/Cooking/" + fil[4:] + ".ogg"))
-    else:
-        pygame.mixer.music.load(np(loc+"Music/" + fil+".ogg"))
+    pygame.mixer.music.load(np(loc+ fil+".ogg"))
     pygame.mixer.music.play(loops)
 
 
@@ -173,39 +164,27 @@ def rot_center(image, angle):
 
 
 blank64=img4("Trans")
-memxs = os.listdir(np(loc+"EMX/Menu/"))
-cemxs = os.listdir(np(loc+"EMX/Cooking/"))
-mmusics=os.listdir(np(loc+"Music/Menu/"))
-cmusics=os.listdir(np(loc+"Music/Cooking/"))
-memix=[]
-cemix=[]
-mmus=[]
-cmus=[]
-for emx in memxs:
-    if emx[-4:] == ".ogg":
-        memix.append("MEMX"+emx[:-4])
-for emx in cemxs:
-    if emx[-4:] == ".ogg":
-        cemix.append("CEMX"+emx[:-4])
-for mus in mmusics:
-    if mus[-4:] == ".ogg":
-        mmus.append("MMUS"+mus[:-4])
-for mus in cmusics:
-    if mus[-4:] == ".ogg":
-        cmus.append("CMUS"+mus[:-4])
+dirs=["Menu","Cooking","Haunted"]
+music_mix={}
+for d in dirs:
+    emx=os.listdir(np(loc+"EMX/"+d))
+    emx=[e[:-4] for e in emx if e[-4:]==".ogg"]
+    if emx:
+        music_mix[d]=["EMX/"+d+"/"+e for e in emx]
+    else:
+        mus = os.listdir(np(loc + "Music/" + d))
+        mus = [m[:-4] for m in mus if m[-4:] == ".ogg"]
+        music_mix[d] = ["Music/"+d+"/" + m for m in mus]
 class DJ(object):
     def __init__(self):
-        if memix:
-            self.songs=memix
-        else:
-            self.songs=mmus
-    def switch(self):
-        if cemix:
-            self.songs=cemix
-        else:
-            self.songs=cmus
-        pygame.mixer.music.stop()
-        musplay(choice(self.songs), 1)
+        self.songs=music_mix["Menu"]
+        self.state="Menu"
+    def switch(self,d):
+        if self.state!=d:
+            self.songs=music_mix[d]
+            pygame.mixer.music.stop()
+            musplay(choice(self.songs), 1)
+            self.state=d
     def update(self):
         if not pygame.mixer.music.get_busy():
             musplay(choice(self.songs),1)

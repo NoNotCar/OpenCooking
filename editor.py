@@ -1,8 +1,8 @@
 import pygame, sys
-size=17,7
-loadfile=None
+size=15,9
+loadfile="3-5"
 pygame.init()
-screen = pygame.display.set_mode((max([size[0],16])*64, size[1]*64+192))
+screen = pygame.display.set_mode((max([size[0],17])*64, size[1]*64+192))
 import World
 import Objects
 import Food
@@ -69,14 +69,14 @@ if loadfile:
     size=w.size
 clock = pygame.time.Clock()
 selmenu=0
-tilemenus=[[0,1,2]]
+tilemenus=[[0,1,2,3],[4,5,6]]
 objmenus=[FoodIter(Objects.Counter,[Food.Plate,Salad.SaladBottle,Sandwich.MustardBottle,Sandwich.KetchupBottle,Soup.Pot,Breakfast.Pan]),
           MultiIter(Objects.FoodExit,Objects.Returner),
           FoodIter(Objects.Spawner,[Salad.Cucumber,Salad.Lettuce,Salad.Tomato,Salad.Carrot,Salad.Potato],False),
           FoodIter(Objects.Spawner,[Sandwich.Bread,Sandwich.Cheese,Burger.Burger,Burger.BunTop,Breakfast.Steak,Burger.Chicken],False),
           EditorIter(Objects.Trash),MultiIter(Objects.ChoppingBoard,Objects.Grater,Objects.HammerBoard,Objects.Hob),
           EditorIter(Objects.Sink),MultiIter(Objects.Button,Objects.Flipper),SpinIter(Objects.ArrowBlock),SpinIter(Objects.ArrowHob),
-          SpinIter(Objects.SpawnMan,8),EditorIter(Objects.Wall),SpinIter(Objects.Conveyor),SpinIter(Objects.MultiArrowBlock),EditorIter(Objects.FixedCounter)]
+          SpinIter(Objects.SpawnMan,8),EditorIter(Objects.Wall),SpinIter(Objects.Conveyor),SpinIter(Objects.MultiArrowBlock),MultiIter(Objects.FixedCounter,Objects.FlickerLight)]
 seltiles=[0 for _ in tilemenus]
 while True:
     kmods=pygame.key.get_mods()
@@ -116,8 +116,8 @@ while True:
         screen.blit(Tiles.tiles[tm[seltiles[n]]].img,(n*64,size[1]*64+80))
     for on,om in enumerate(objmenus):
         gi=om.get_img(w)
-        screen.blit(gi[0],(n*64+128+on*64,size[1]*64+80-gi[1]*4))
-    off=selmenu*64+(0 if selmenu<len(tilemenus) else 64)
+        screen.blit(gi[0],(n*64+64+on*64,size[1]*64+80-gi[1]*4))
+    off=selmenu*64
     pygame.draw.polygon(screen,(0,0,0),[(off+32,size[1]*64+160),(off,size[1]*64+192),(off+64,size[1]*64+192)])
     pygame.display.flip()
     clock.tick(60)

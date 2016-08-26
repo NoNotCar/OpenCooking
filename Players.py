@@ -12,6 +12,7 @@ class Player(Object):
     task=None
     inv=None
     himg=None
+    img=True
     def __init__(self, x, y, col, mt, c):
         self.place(x, y)
         self.imgs=new_man(mt,col)

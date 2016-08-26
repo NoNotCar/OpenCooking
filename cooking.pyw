@@ -10,13 +10,14 @@ import World
 import Players
 import os
 import pickle
+import Levels
 tfont=Img.fload("cool",64)
 sfont=Img.fload("cool",32)
 clock = pygame.time.Clock()
 tickimg=Img.img4("Tick")
 crossimg=Img.img4("Null")
 cols=((255,0,0),(0,255,0),(0,0,255),(255,255,0),(255,0,255),(0,255,255),(255,128,0),(255,128,255))
-men=("Man","FMan","TMan","SMan","ManBot","ManChef","ManBlack","Slime","Penguin","Woman","CatThing")
+men=("Man","FMan","TMan","SMan","ManBot","ManChef","ManBlack","Slime","Penguin","Woman","CatThing","Illuminati")
 pimgs=[[Img.new_man(mt,col)[2] for col in cols] for mt in men]
 breaking = False
 try:
@@ -106,9 +107,9 @@ while not breaking:
     pygame.display.flip()
     clock.tick(60)
     dj.update()
-dj.switch()
 maxlevel=len(os.listdir(Img.np(Img.loc+"saves/")))
 while True:
+    dj.switch("Cooking")
     breaking=False
     limgs = []
     for n in range(maxlevel):
@@ -139,13 +140,21 @@ while True:
         pygame.display.flip()
     players=[Players.Player(0,0, cols[rsps[n]],men[ordermans[n]], rsc[n]) for n in range(len(rsc))]
     w=World.World(players,level)
+    n=level-1
+    backcolour=(100, 100, 100)
+    alevel=(n//10+1, n%10+1)
+    if alevel in Levels.haunted:
+        dj.switch("Haunted")
+        backcolour=(10,10,10)
+    if alevel in Levels.outdoors:
+        backcolour=(105,211,211)
     superrect=pygame.Rect(0,0,w.size[0]*64,w.size[1]*64+64)
     superrect.centerx = screen.get_rect().centerx
     superrect.centery = screen.get_rect().centery
     subsurf=screen.subsurface(superrect)
     timerect=pygame.Rect(881,968,159,112)
     timesurf=screen.subsurface(timerect)
-    screen.fill((100, 100, 100))
+    screen.fill(backcolour)
     pygame.display.flip()
     time=14400
     olduprects=[]
@@ -153,7 +162,7 @@ while True:
     pausing=False
     while not breaking:
         for rect in olduprects:
-            screen.fill((100, 100, 100),rect)
+            screen.fill(backcolour,rect)
         uprects=[superrect,timerect]
         es=pygame.event.get()
         for e in es:

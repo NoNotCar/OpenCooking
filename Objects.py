@@ -3,12 +3,15 @@ from Img import img4, sndget, imgstrip4f, colcopy, imgstrip4, blank64, imgrot
 import Food
 import Direction as D
 import pygame
+from random import randint
 chop=sndget("chop")
 hit=sndget("hit")
 wash=sndget("wash")
 money=sndget("money")
 voids=[sndget("void"),sndget("voidimp")]
 grate=sndget("grate")
+pon=sndget("poweron")
+poff=sndget("poweroff")
 class Counter(Object):
     img=img4("Counter")
     o3d=4
@@ -20,8 +23,10 @@ class FixedCounter(Counter):
     name="Fixed"
     fy=-4
 class Wall(Object):
-    img=img4("Wall")
-    o3d=8
+    img=img4("WallBottom")
+    overimg=img4("WallTop")
+    o3d = -12
+    over3d=8
     placeable = False
 class Spawner(Object):
     img=img4("Spawner")
@@ -110,7 +115,6 @@ class FoodExit(Object):
     img=img4("Exit")
     o3d = 4
     reverse = False
-    contents_render_order_override = True
     def on_place(self,world):
         for o in world.orders:
             if o.plate==self.contents:
@@ -157,7 +161,6 @@ class Returner(Object):
     img=img4("Entrance")
     o3d = 4
     updates = True
-    contents_render_order_override = True
     def update(self,world,events):
         if not self.contents:
             for r in world.returned:
@@ -437,4 +440,19 @@ class SpawnMan(Object):
         self.d=d
     def get_img(self,world):
         return self.imgs[self.d]
+class FlickerLight(Object):
+    exists = False
+    img=img4("BulbIcon")
+    ttd=randint(600,1200)
+    def update(self,world,events):
+        if self.ttd:
+            self.ttd-=1
+        else:
+            world.dark=not world.dark
+            if world.dark:
+                self.ttd=randint(180,240)
+                poff.play()
+            else:
+                self.ttd=randint(600,1200)
+                pon.play()
 Conveyor.init()
