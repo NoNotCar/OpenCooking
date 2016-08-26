@@ -3,11 +3,14 @@ from BaseClasses import Object
 import Direction as D
 import Objects
 pick=sndget("pickup")
+smallmen={"SMan":1,"Slime":4,"Penguin":1,"Illuminati":3,"CatThing":2}
 class Player(Object):
     d=2
     updates = True
     name = "Player"
     o3d = 3
+    overimg = img4("ChefHat")
+    over3d = 11
     placeable = False
     task=None
     inv=None
@@ -16,6 +19,10 @@ class Player(Object):
     def __init__(self, x, y, col, mt, c):
         self.place(x, y)
         self.imgs=new_man(mt,col)
+        try:
+            self.over3d-=smallmen[mt]
+        except KeyError:
+            pass
         self.c=c
         self.col=col
     def update(self, world, events):
