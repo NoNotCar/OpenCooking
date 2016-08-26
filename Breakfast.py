@@ -7,14 +7,14 @@ class Pan(Item):
     burnt=False
     bimg=Img.img4("BurntPan")
     def combine(self, food):
-        if food.cookable and "cooked" not in food.state and not self.contents:
+        if food.cookable and "cooked" not in food.state and not self.contents and not self.burnt:
             self.contents=food
             self.re_img()
             return True
     def re_img(self):
         if self.burnt:
             self.img=self.bimg
-        if self.contents:
+        elif self.contents:
             self.img=self.__class__.img.copy()
             self.img.blit(self.contents.get_img(),(0,0))
         else:

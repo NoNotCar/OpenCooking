@@ -164,7 +164,7 @@ def rot_center(image, angle):
 
 
 blank64=img4("Trans")
-dirs=["Menu","Cooking","Haunted"]
+dirs=["Menu","Cooking","Haunted","Outdoor"]
 music_mix={}
 for d in dirs:
     emx=os.listdir(np(loc+"EMX/"+d))

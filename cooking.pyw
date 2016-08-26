@@ -147,6 +147,7 @@ while True:
         dj.switch("Haunted")
         backcolour=(10,10,10)
     if alevel in Levels.outdoors:
+        dj.switch("Outdoor")
         backcolour=(105,211,211)
     superrect=pygame.Rect(0,0,w.size[0]*64,w.size[1]*64+64)
     superrect.centerx = screen.get_rect().centerx
