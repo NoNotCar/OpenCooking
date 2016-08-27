@@ -12,7 +12,7 @@ class Food(Item):
         cls.img=Img.img4(name)
         cls.stateimgs={"normal":cls.img}
         cls.raw_img=Img.imgsz(name,(32,32))
-        for s in ["chopped","grated","cooked","hammered","grilled","hammered+cooked","cooked+chopped"]:
+        for s in ["chopped","grated","cooked","hammered","grilled","rolled","hammered+cooked","cooked+chopped"]:
             try:
                 cls.stateimgs[s]=Img.img4("".join([ss.capitalize() for ss in s.split("+")])+name)
                 cls.validstates.append(s)
@@ -107,10 +107,13 @@ class Plate(Item):
                 return True
             self.re_img()
     def re_img(self):
-        self.img = pygame.Surface((64, 64 + self.contents.o3d*4), pygame.SRCALPHA, 32).convert_alpha()
-        self.img.blit(self.__class__.img,(0,self.contents.o3d*4))
-        self.img.blit(self.contents.get_img(),(0,0))
-        self.o3d=self.contents.o3d
+        if self.contents:
+            self.img = pygame.Surface((64, 64 + self.contents.o3d*4), pygame.SRCALPHA, 32).convert_alpha()
+            self.img.blit(self.__class__.img,(0,self.contents.o3d*4))
+            self.img.blit(self.contents.get_img(),(0,0))
+            self.o3d=self.contents.o3d
+        else:
+            self.img=self.__class__.img
     def maketag(self):
         if self.contents:
             return "Plate:"+self.contents.maketag()

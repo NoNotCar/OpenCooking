@@ -10,6 +10,7 @@ wash=sndget("wash")
 money=sndget("money")
 voids=[sndget("void"),sndget("voidimp")]
 grate=sndget("grate")
+roll=sndget("roll")
 pon=sndget("poweron")
 poff=sndget("poweroff")
 class Counter(Object):
@@ -78,6 +79,11 @@ class HammerBoard(XBoard):
     img=img4("HittingBoard")
     recipe = "hammered"
     sound = hit
+class RollingBoard(XBoard):
+    img=img4("RollingBoard")
+    recipe = "rolled"
+    sound = roll
+    mpmax = 8
 class Trash(Object):
     img=img4("Trash")
     o3d = 4

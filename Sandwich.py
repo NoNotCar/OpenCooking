@@ -44,13 +44,14 @@ class Bread(GrillableFood):
         names = [c.name for c in self.contents]
         return [s for s in sandwichitems if s in names]
     def maketag(self):
-        return "Bread:" + ",".join(self.get_names()) + ("T" if self.topped else "uT")
+        return "Bread:" + ",".join(self.get_names()) + ("T" if self.topped else "uT")+self.state
     def can_change_state(self,tstate):
         return self.topped and tstate in self.validstates
     def set_state(self,state):
         if state=="grilled":
             self.img=self.stateimgs["grilled"]
             self.re_img()
+        self.state=state
 class Ketchup(Food):
     name="Ketchup"
     img=Img.img4("Ketchup")

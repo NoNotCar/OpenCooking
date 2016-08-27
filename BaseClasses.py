@@ -74,7 +74,7 @@ class Object(object):
     def can_place(self, item):
         return True
     def do_interact(self,world,p):
-        if p.inv:
+        if p.inv and p.inv.utensil:
             pinvc=p.inv.contents
             if pinvc and pinvc.removable:
                 if not self.contents and self.placeable and not self.locked and self.can_place(pinvc):

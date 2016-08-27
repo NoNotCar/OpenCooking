@@ -68,6 +68,8 @@ def world_3(level):
             return randomsoup([Salad.Tomato,Breakfast.Steak,Salad.Carrot,Sandwich.Ketchup],True)
     if level==8:
         return toastie([Salad.Tomato,Salad.Carrot,Sandwich.Ketchup,Salad.Lettuce,Sandwich.Cheese],3)
+    if level==9:
+        return world_3(8) if randint(0,1) else pizza([Salad.Tomato,Salad.Carrot],2)
     oc=[]
     oc.append(Burger.Burger())
     if level==3 and not randint(0,2):
@@ -119,6 +121,23 @@ def toastie(toastings,chance):
                 else:
                     toastitems.append(t("chopped"))
     return [Sandwich.Bread("grilled")]+toastitems+[Sandwich.Bread("grilled")]
+def pizza(pizzings,chance):
+    pizzitems = []
+    if randint(0,3):
+        pizzitems.append(Sandwich.Cheese("grated"))
+    for t in pizzings:
+        if not randint(0, chance):
+            if t.name in ["Ketchup", "Mustard"]:
+                pizzitems.append(t("liquid"))
+            elif t.name == "Carrot":
+                pizzitems.append(t("chopped" if randint(0, 1) else "grated"))
+            elif t.name == "Steak":
+                pizzitems.append(t("cooked+chopped"))
+            else:
+                pizzitems.append(t("chopped"))
+    npizza=Burger.Dough()
+    npizza.order_init(pizzitems)
+    return [npizza]
 orderers=[world_1,world_2,world_3]
 haunted=[(3,4)]
 outdoors=[(3,5),(3,6)]
