@@ -87,6 +87,10 @@ class World(object):
     def render(self,screen):
         if self.dark:
             screen.fill((0,0,0))
+            for r in self.w:
+                for o in r:
+                    if o and o.darkimg and not o.contents:
+                        screen.blit(o.darkimg, (o.x * 64 + o.xoff, o.y * 64 + o.yoff + 64 - o.o3d * 4))
             return None
         for x in range(self.size[0]):
             screen.blit(self.get_t(x,0).backwall,(x*64,0))

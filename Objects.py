@@ -266,6 +266,7 @@ class Flipper(Counter):
         return self.imgs[world.button]
 class Hob(Counter):
     img=img4("Cooker")
+    darkimg = img4("CookerDark")
     def can_place(self, item):
         return item.name in ("Pot","Pan")
     def on_place(self,world):

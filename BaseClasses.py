@@ -2,6 +2,7 @@ import Img
 class Object(object):
     img=None
     overimg=None
+    darkimg=None
     speed=4
     xoff,yoff=(0,0)
     moving=False
