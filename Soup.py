@@ -13,6 +13,7 @@ class Soup(Item):
     is_burnt=False
     topping=None
     chunks=None
+    removable = False
     ordermultiplier = 1.5
     def __init__(self,food=None):
         self.colours=[]

@@ -30,6 +30,8 @@ class Object(object):
         pass
     def get_img(self,world):
         return self.img
+    def get_overimg(self,world):
+        return self.overimg
     def mupdate(self,world):
         if self.xoff>0:
             self.xoff-=self.speed
@@ -71,13 +73,21 @@ class Object(object):
         pass
     def can_place(self, item):
         return True
+    def do_interact(self,world,p):
+        if p.inv:
+            pinvc=p.inv.contents
+            if pinvc and pinvc.removable:
+                if not self.contents and self.placeable and not self.locked and self.can_place(pinvc):
+                    self.contents=pinvc
+                    p.inv.contents=None
+                    p.inv.re_img()
+                    self.on_place(world)
+                    return None
+        return self.interact(world,p)
 class Item(object):
     name="Item"
-    choppable=False
-    grateable=False
-    cookable=False
-    hammerable=False
     contents=None
+    removable=True
     is_supply=False
     utensil=True
     soupcolour=None
@@ -109,3 +119,6 @@ class Item(object):
 
     def pcombine(self, food, plate):
         return self.combine(food)
+
+    def can_change_state(self,tstate):
+        return False

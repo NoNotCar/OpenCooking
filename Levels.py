@@ -61,6 +61,13 @@ def world_2(level):
 def world_3(level):
     if level==4:
         return world_3(1) if randint(0,1) else world_1(1)
+    if level==7:
+        if randint(0,1):
+            return world_3(1)
+        else:
+            return randomsoup([Salad.Tomato,Breakfast.Steak,Salad.Carrot,Sandwich.Ketchup],True)
+    if level==8:
+        return toastie([Salad.Tomato,Salad.Carrot,Sandwich.Ketchup,Salad.Lettuce,Sandwich.Cheese],3)
     oc=[]
     oc.append(Burger.Burger())
     if level==3 and not randint(0,2):
@@ -83,6 +90,36 @@ def world_3(level):
                 oc.append(e("chopped"))
     oc.append(Burger.BunTop())
     return oc
+def randomsoup(soupings,allow_cheese):
+    soupitems = []
+    for _ in range(3):
+        ch = choice(soupings)
+        if ch.name in ["Ketchup", "Mustard"]:
+            soupitems.append(ch("liquid"))
+        elif ch.name=="Carrot":
+            soupitems.append(ch("chopped" if randint(0,1) else "grated"))
+        elif ch.name=="Steak":
+            soupitems.append(ch("cooked+chopped"))
+        else:
+            soupitems.append(ch("chopped"))
+    return [Soup.Soup.order_init(soupitems)] + ([Sandwich.Cheese("grated")] if allow_cheese and randint(0, 1) else [])
+def toastie(toastings,chance):
+    toastitems = []
+    while not toastitems:
+        for t in toastings:
+            if not randint(0,chance):
+                if t.name in ["Ketchup", "Mustard"]:
+                    toastitems.append(t("liquid"))
+                elif t.name == "Carrot":
+                    toastitems.append(t("chopped" if randint(0, 1) else "grated"))
+                elif t.name == "Cheese":
+                    toastitems.append(t("grated"))
+                elif t.name == "Steak":
+                    toastitems.append(t("cooked+chopped"))
+                else:
+                    toastitems.append(t("chopped"))
+    return [Sandwich.Bread("grilled")]+toastitems+[Sandwich.Bread("grilled")]
 orderers=[world_1,world_2,world_3]
 haunted=[(3,4)]
-outdoors=[(3,5)]
+outdoors=[(3,5),(3,6)]
+tutorials={(1,1):"Salad",(1,6):"Sandwich"}

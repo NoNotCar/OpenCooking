@@ -19,6 +19,7 @@ class World(object):
         self.ps=ps
         self.uos=[]
         self.ucs=[]
+        self.ur={}
         self.level=(n-1)%10+1
         self.world=(n-1)//10+1
         manualspawn=False
@@ -47,7 +48,7 @@ class World(object):
             for n,p in enumerate(ps):
                 self.spawn_p(p)
         self.orders=[Levels.new_order(self.level,self.world)]
-        self.tonextorder=1200
+        self.tonextorder=1200+self.orders[-1].time - 1800
         self.returned=[]
     def update(self,events):
         self.anitick+=1
@@ -65,7 +66,7 @@ class World(object):
             if o.time==0:
                 self.orders.remove(o)
                 self.cash-=5
-                self.reordertime+=60
+                self.reordertime+=120
                 fail.play()
                 if len(self.orders)==0:
                     self.orders.append(Levels.new_order(self.level,self.world))
@@ -93,6 +94,7 @@ class World(object):
                 screen.blit(self.get_t(x,y).img,(x*64,y*64+64))
         corenders=[]
         prenders=[]
+        validurs=self.ur.keys()
         for y in range(self.size[1]):
             for x in range(self.size[0]):
                 o=self.get_o(x,y)
@@ -105,15 +107,18 @@ class World(object):
                         corenders.append((o,"c"))
                     if o.progress is not None:
                         prenders.append(o)
-                    if o.overimg:
+                    if o.get_overimg(self):
                         corenders.append((o,"o"))
                     if o in self.ps and o.himg and o.d:
                         screen.blit(o.himg,(x*64+o.xoff+16+(16*(2-o.d)),y*64+o.yoff+64-o.o3d*4+24))
+                if (x, y) in validurs:
+                    o=self.ur[(x,y)]
+                    screen.blit(o.get_img(self), (x * 64 + o.xoff, y * 64 + o.yoff + 64 - o.o3d * 4))
         for o,t in corenders:
             if t=="c":
                 screen.blit(o.contents.get_img(),(o.x * 64 + o.xoff + o.fx, o.y * 64 + o.yoff + 64 - o.o3d * 4 + o.fy - o.contents.o3d * 4))
             else:
-                screen.blit(o.overimg, (o.x * 64 + o.xoff, o.y * 64 + o.yoff + 64 - o.over3d * 4))
+                screen.blit(o.get_overimg(self), (o.x * 64 + o.xoff, o.y * 64 + o.yoff + 64 - o.over3d * 4))
         for o in prenders:
             screen.blit(
                 (Img.progresses, Img.wprogresses)[o.warn][0 if o.warn and self.anitick // 15 % 2 else o.progress],
@@ -141,6 +146,8 @@ class World(object):
                 break
         self.spawn(p)
     def dest(self,o):
+        if o in self.ur.values():
+            del self.ur[(o.x,o.y)]
         self.w[o.x][o.y] = None
         if o.updates:
             self.uos.remove(o)
@@ -163,16 +170,21 @@ class World(object):
         self.cash+=len(o.c)*5
         if not self.orders:
             self.orders.append(Levels.new_order(self.level,self.world))
-            self.reordertime-=60
+            self.reordertime-=120
             self.tonextorder=self.reordertime+self.orders[-1].time-1800
     def p_button(self):
         self.button=not self.button
         button.play()
+    def make_unreal(self,o):
+        self.dest(o)
+        self.ur[(o.x,o.y)]=o
+        self.uos.append(o)
 class SaveObject(object):
     def __init__(self,t,w):
         self.t=t
         self.w=w
 class EditWorld(World):
+    ur={}
     def __init__(self,size,load=None):
         self.size=size
         if load:

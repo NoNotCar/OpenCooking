@@ -1,16 +1,20 @@
-from Food import Food
+from Food import Food, GrillableFood
 import Salad
 import pygame
 import Img
 from BaseClasses import Item
-sandwichitems=Salad.saladitems+["Ketchup","Mustard","Cheese"]
-class Bread(Food):
+sandwichitems=Salad.saladitems+["Ketchup","Mustard","Cheese","Steak"]
+class Bread(GrillableFood):
     topped=False
     simg=None
     state="normal"
     ordermultiplier = 0.6
-    def __init__(self):
+    def __init__(self,state="normal"):
         self.contents=[]
+        self.state=state
+        if state=="grilled":
+            self.img = self.stateimgs["grilled"]
+            self.ordermultiplier=1.25
     def combine(self, food):
         if not any([self.topped,food.utensil]):
             if food.state != "normal" and food.name in sandwichitems and food.name not in self.get_names():
@@ -41,6 +45,12 @@ class Bread(Food):
         return [s for s in sandwichitems if s in names]
     def maketag(self):
         return "Bread:" + ",".join(self.get_names()) + ("T" if self.topped else "uT")
+    def can_change_state(self,tstate):
+        return self.topped and tstate in self.validstates
+    def set_state(self,state):
+        if state=="grilled":
+            self.img=self.stateimgs["grilled"]
+            self.re_img()
 class Ketchup(Food):
     name="Ketchup"
     img=Img.img4("Ketchup")

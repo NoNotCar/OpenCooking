@@ -1,9 +1,9 @@
 from BaseClasses import Object
-from Img import img4, sndget, imgstrip4f, colcopy, imgstrip4, blank64, imgrot
+from Img import img4, sndget, imgstrip4f, colcopy, imgstrip4, blank64, imgrot, new_man
 import Food
 import Direction as D
 import pygame
-from random import randint
+from random import randint, choice
 chop=sndget("chop")
 hit=sndget("hit")
 wash=sndget("wash")
@@ -28,6 +28,10 @@ class Wall(Object):
     o3d = -12
     over3d=8
     placeable = False
+class Tree(Object):
+    overimg = img4("Tree")
+    over3d = 12
+    placeable = False
 class Spawner(Object):
     img=img4("Spawner")
     o3d = 4
@@ -38,69 +42,42 @@ class Spawner(Object):
         self.place(x,y)
     def on_take(self,world):
         self.contents=self.foodspawn()
-class ChoppingBoard(Object):
+class XBoard(Object):
+    recipe=""
+    o3d = 4
+    mp = 0
+    mpmax=5
+    sound=None
+    def interact(self, world, p):
+        if self.contents and self.contents.can_change_state(self.recipe):
+            p.task = self
+            self.locked = True
+            self.progress = 0
+    def tupdate(self, p):
+        self.mp += 1
+        if self.mp == self.mpmax:
+            self.mp = 0
+            self.progress += 1
+            if self.progress == 15:
+                p.task = False
+                self.locked = False
+                self.contents.set_state(self.recipe)
+                self.progress = None
+            elif self.progress % 4 == 3:
+                self.sound.play()
+class ChoppingBoard(XBoard):
     img=img4("ChoppingBoard")
-    o3d=4
-    mp=0
-    def interact(self,world,p):
-        if self.contents and self.contents.choppable and self.contents.state=="normal":
-            p.task=self
-            self.locked=True
-            self.progress=0
-    def tupdate(self,p):
-        self.mp+=1
-        if self.mp==5:
-            self.mp=0
-            self.progress+=1
-            if self.progress==15:
-                p.task=False
-                self.locked=False
-                self.contents.state="chopped"
-                self.progress=None
-            elif self.progress%4==3:
-                chop.play()
-class Grater(Object):
+    recipe = "chopped"
+    sound = chop
+class Grater(XBoard):
     img=img4("Grater")
-    o3d=4
-    mp=0
-    def interact(self,world,p):
-        if self.contents and self.contents.grateable and self.contents.state=="normal":
-            p.task=self
-            self.locked=True
-            self.progress=0
-    def tupdate(self,p):
-        self.mp+=1
-        if self.mp==10:
-            self.mp=0
-            self.progress+=1
-            if self.progress==15:
-                p.task=False
-                self.locked=False
-                self.contents.state="grated"
-                self.progress=None
-            elif self.progress%4==3:
-                grate.play()
-class HammerBoard(Object):
+    recipe = "grated"
+    sound = grate
+    mpmax = 10
+class HammerBoard(XBoard):
     img=img4("HittingBoard")
-    o3d=4
-    mp=0
-    def interact(self,world,p):
-        if self.contents and self.contents.hammerable and self.contents.state=="normal":
-            p.task=self
-            self.locked=True
-            self.progress=0
-    def tupdate(self,p):
-        self.mp+=1
-        if self.mp==5:
-            self.mp=0
-            self.progress+=1
-            if self.progress==15:
-                p.task=False
-                self.locked=False
-                self.contents.set_state("hammered")
-                self.progress=None
-            elif self.progress%4==3:
-                hit.play()
+    recipe = "hammered"
+    sound = hit
 class Trash(Object):
     img=img4("Trash")
     o3d = 4
@@ -300,6 +277,30 @@ class Hob(Counter):
         world.del_updates(self)
         self.warn=False
         self.progress=None
+class Grill(Hob):
+    img=img4("GrillBase")
+    oimgs=[img4("GrillTop"+s) for s in ["Off","On"]]
+    on=False
+    over3d = 8
+    def can_place(self, item):
+        return item.can_change_state("grilled")
+    def on_place(self,world):
+        world.reg_updates(self)
+        self.on=True
+    def update(self,world,events):
+        if self.contents:
+            self.contents.grill()
+            self.warn=self.contents.warn
+            self.progress=self.contents.progress
+            if self.contents.burnprog==self.contents.burningtime:
+                self.contents=None
+    def on_take(self, world):
+        world.del_updates(self)
+        self.warn = False
+        self.progress = None
+        self.on=False
+    def get_overimg(self,world):
+        return self.oimgs[self.on]
 class ArrowHob(Hob):
     imgs=imgstrip4f("ArrowCooker",16)
     img=imgs[0]
@@ -325,8 +326,6 @@ class ArrowHob(Hob):
                 self.locked = False
     def get_img(self, world):
         return self.imgs[self.d]
-    def can_place(self, item):
-        return item.name=="Pot"
 class Conveyor(Counter):
     anitick=0
     updates = False
@@ -455,4 +454,51 @@ class FlickerLight(Object):
             else:
                 self.ttd=randint(600,1200)
                 pon.play()
+class SpawnPerson(Object):
+    imgs=imgstrip4("PeopleSpawner")
+    img=imgs[0]
+    name="PSpawn"
+    exists = False
+    tnp=randint(120,180)
+    def __init__(self,x,y,d=0):
+        self.place(x,y)
+        self.d=d
+    def get_img(self,world):
+        return self.imgs[self.d]
+    def update(self,world,events):
+        if self.tnp:
+            self.tnp-=1
+        else:
+            self.tnp=randint(120,180)
+            if world.is_clear(self.x,self.y):
+                world.spawn(Person(self.x,self.y,self.d))
+class Person(Object):
+    updates = True
+    speed = 2
+    real=True
+    def __init__(self,x,y,d):
+        self.place(x,y)
+        mt=choice(("Man","FMan","TMan","SMan","ManBot","ManBlack","Slime","Penguin","Woman","CatThing","Illuminati"))
+        col=(randint(0,255),randint(0,255),randint(0,255))
+        self.img=new_man(mt,col)[d]
+        self.d=d
+        dx, dy = D.get_dir(self.d)
+        self.xoff=dx*-64
+        self.yoff=dy*-64
+        self.moving=True
+    def update(self,world,events):
+        if not self.moving:
+            tx,ty=D.offset(self.d,self)
+            dx,dy=D.get_dir(self.d)
+            if not world.in_world(tx,ty):
+                if self.real:
+                    world.make_unreal(self)
+                    self.real=False
+                self.xoff+=dx*self.speed
+                self.yoff+=dy*self.speed
+                if max((abs(self.xoff),abs(self.yoff)))==64:
+                    world.dest(self)
+            else:
+                self.move(dx,dy,world)
+
 Conveyor.init()

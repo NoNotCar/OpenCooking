@@ -29,6 +29,7 @@ class SaladBottle(Item):
     def supply(self):
         return SaladCream("liquid")
 class Salad(Item):
+    removable = False
     def __init__(self,salad):
         self.contents=salad
     def pcombine(self, food, plate):

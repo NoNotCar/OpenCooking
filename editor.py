@@ -1,8 +1,8 @@
 import pygame, sys
-size=15,9
-loadfile="3-5"
+size=11,7
+loadfile=None
 pygame.init()
-screen = pygame.display.set_mode((max([size[0],17])*64, size[1]*64+192))
+screen = pygame.display.set_mode((max([size[0],18])*64, size[1]*64+192))
 import World
 import Objects
 import Food
@@ -14,6 +14,7 @@ import Soup
 import Tiles
 import Img
 dj=Img.DJ()
+dj.switch("Outdoor")
 class EditorIter(object):
     pointer=0
     maxp=1
@@ -74,9 +75,10 @@ objmenus=[FoodIter(Objects.Counter,[Food.Plate,Salad.SaladBottle,Sandwich.Mustar
           MultiIter(Objects.FoodExit,Objects.Returner),
           FoodIter(Objects.Spawner,[Salad.Cucumber,Salad.Lettuce,Salad.Tomato,Salad.Carrot,Salad.Potato],False),
           FoodIter(Objects.Spawner,[Sandwich.Bread,Sandwich.Cheese,Burger.Burger,Burger.BunTop,Breakfast.Steak,Burger.Chicken],False),
-          EditorIter(Objects.Trash),MultiIter(Objects.ChoppingBoard,Objects.Grater,Objects.HammerBoard,Objects.Hob),
+          EditorIter(Objects.Trash),MultiIter(Objects.ChoppingBoard,Objects.Grater,Objects.HammerBoard,Objects.Hob,Objects.Grill),
           EditorIter(Objects.Sink),MultiIter(Objects.Button,Objects.Flipper),SpinIter(Objects.ArrowBlock),SpinIter(Objects.ArrowHob),
-          SpinIter(Objects.SpawnMan,8),EditorIter(Objects.Wall),SpinIter(Objects.Conveyor),SpinIter(Objects.MultiArrowBlock),MultiIter(Objects.FixedCounter,Objects.FlickerLight)]
+          SpinIter(Objects.SpawnMan,8),MultiIter(Objects.Wall,Objects.Tree),SpinIter(Objects.Conveyor),SpinIter(Objects.MultiArrowBlock),MultiIter(Objects.FixedCounter,Objects.FlickerLight),
+          SpinIter(Objects.SpawnPerson)]
 seltiles=[0 for _ in tilemenus]
 while True:
     kmods=pygame.key.get_mods()

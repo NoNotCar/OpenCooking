@@ -7,7 +7,7 @@ class Pan(Item):
     burnt=False
     bimg=Img.img4("BurntPan")
     def combine(self, food):
-        if food.cookable and "cooked" not in food.state and not self.contents and not self.burnt:
+        if food.can_change_state("cooked") and not self.contents and not self.burnt:
             self.contents=food
             self.re_img()
             return True
@@ -32,14 +32,6 @@ class Pan(Item):
         return "Pan:"+self.contents.maketag() if self.contents else "empty"
 class Steak(CookableFood):
     ordermultiplier = 1.5
-    pimg = Img.img4("Patty")
-    cpimg = Img.img4("CookedPatty")
     hammerable = True
-    def set_state(self,state):
-        if self.state=="hammered" and state=="cooked":
-            self.state="hammered+cooked"
-        else:
-            self.state=state
-    def get_img(self):
-        return {"normal":self.img,"hammered":self.pimg,"cooked":self.cooked_img,"hammered+cooked":self.cpimg}[self.state]
+    soupcolour = (96, 61, 26)
 items=[Pan,Steak]

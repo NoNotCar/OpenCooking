@@ -54,6 +54,5 @@ class Burger(Food):
 class BunTop(Food):
     pass
 class Chicken(Steak):
-    pimg = Img.img4("ChickenPatty")
-    cpimg = Img.img4("CookedChickenPatty")
+    pass
 items=[BunTop,Chicken]

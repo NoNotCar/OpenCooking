@@ -56,7 +56,7 @@ class Player(Object):
                                 self.inv=None
             if bpress[1]:
                 if o and not o.locked:
-                    o.interact(world,self)
+                    o.do_interact(world,self)
             if sinv != self.tag_or_none() and not soverride:
                 pick.play()
             if sinv != self.tag_or_none():
