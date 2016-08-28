@@ -38,7 +38,7 @@ ldone=Img.sndget("ldone")
 imgn=0
 imgx=0
 wavelength=360/31.0*random.randint(1,2)
-wavespeed=random.choice([random.randint(1,4),random.randint(-4,-1)])
+wavespeed=random.randint(-4,4)
 wavemovement=random.randint(-4,4)
 def format_time(time):
     t=time+60
