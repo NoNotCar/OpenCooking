@@ -70,6 +70,8 @@ def world_3(level):
         return toastie([Salad.Tomato,Salad.Carrot,Sandwich.Ketchup,Salad.Lettuce,Sandwich.Cheese],3)
     if level==9:
         return world_3(8) if randint(0,1) else pizza([Salad.Tomato,Salad.Carrot],2)
+    if level==10:
+        return world_3(3) if randint(0,1) else pizza([Salad.Tomato,Salad.Carrot,Breakfast.Steak],2)
     oc=[]
     oc.append(Burger.Burger())
     if level==3 and not randint(0,2):
@@ -139,6 +141,6 @@ def pizza(pizzings,chance):
     npizza.order_init(pizzitems)
     return [npizza]
 orderers=[world_1,world_2,world_3]
-haunted=[(3,4)]
+haunted=[(3,4),(3,10)]
 outdoors=[(3,5),(3,6)]
 tutorials={(1,1):"Salad",(1,6):"Sandwich"}

@@ -9,7 +9,7 @@ bcfont=Img.fload("cool",64)
 fail=Img.sndget("fail")
 button=Img.sndget("button")
 class World(object):
-    reordertime=1200
+    reordermult=0.7
     cash=0
     washing=False
     button=False
@@ -48,7 +48,7 @@ class World(object):
             for n,p in enumerate(ps):
                 self.spawn_p(p)
         self.orders=[Levels.new_order(self.level,self.world)]
-        self.tonextorder=1200+self.orders[-1].time - 1800
+        self.tonextorder=int(self.orders[-1].time*self.reordermult)
         self.returned=[]
     def update(self,events):
         self.anitick+=1
@@ -66,15 +66,15 @@ class World(object):
             if o.time==0:
                 self.orders.remove(o)
                 self.cash-=5
-                self.reordertime+=120
+                self.reordermult+=0.1
                 fail.play()
                 if len(self.orders)==0:
                     self.orders.append(Levels.new_order(self.level,self.world))
-                    self.tonextorder = self.reordertime + self.orders[-1].time - 1800
+                    self.tonextorder = int(self.orders[-1].time*self.reordermult)
         self.tonextorder-=1
         if self.tonextorder==0:
             self.orders.append(Levels.new_order(self.level,self.world))
-            self.tonextorder = self.reordertime + self.orders[-1].time - 1800
+            self.tonextorder = int(self.orders[-1].time*self.reordermult)
         for r in self.returned:
             if r[1]:
                 r[1]-=1
@@ -89,8 +89,8 @@ class World(object):
             screen.fill((0,0,0))
             for r in self.w:
                 for o in r:
-                    if o and o.darkimg and not o.contents:
-                        screen.blit(o.darkimg, (o.x * 64 + o.xoff, o.y * 64 + o.yoff + 64 - o.o3d * 4))
+                    if o and o.get_darkimg(self) and (not o.contents or o.ignore_dark_contents):
+                        screen.blit(o.get_darkimg(self), (o.x * 64 + o.xoff, o.y * 64 + o.yoff + 64 - o.o3d * 4))
             return None
         for x in range(self.size[0]):
             screen.blit(self.get_t(x,0).backwall,(x*64,0))
@@ -174,8 +174,8 @@ class World(object):
         self.cash+=len(o.c)*5
         if not self.orders:
             self.orders.append(Levels.new_order(self.level,self.world))
-            self.reordertime-=120
-            self.tonextorder=self.reordertime+self.orders[-1].time-1800
+            self.reordermult-=0.05
+            self.tonextorder=int(self.orders[-1].time*self.reordermult)
     def p_button(self):
         self.button=not self.button
         button.play()
@@ -193,6 +193,7 @@ class EditWorld(World):
         self.size=size
         if load:
             self.load(load)
+            self.loadfile=load
         else:
             self.w = [[None] * self.size[1] for _ in range(self.size[0])]
             self.t = [[0] * self.size[1] for _ in range(self.size[0])]
@@ -200,7 +201,10 @@ class EditWorld(World):
         self.uos=[]
     def save(self):
         sav=SaveObject(self.t,self.w)
-        sf=open(Img.loc+"saves/save.lvl","wb")
+        if self.loadfile:
+            sf = open(Img.loc + "saves/%s.lvl"%self.loadfile, "wb")
+        else:
+            sf=open(Img.loc+"saves/save.lvl","wb")
         pickle.dump(sav,sf)
         sf.close()
 

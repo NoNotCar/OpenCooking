@@ -1,6 +1,6 @@
 import pygame, sys
 size=13,9
-loadfile=None
+loadfile="3-10"
 pygame.init()
 screen = pygame.display.set_mode((max([size[0],18])*64, size[1]*64+192))
 import World

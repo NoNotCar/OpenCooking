@@ -8,6 +8,8 @@ class Object(object):
     moving=False
     o3d=0
     over3d=0
+    d3d=0
+    ignore_dark_contents=False
     name="Object"
     updates=False
     dx=0
@@ -33,6 +35,8 @@ class Object(object):
         return self.img
     def get_overimg(self,world):
         return self.overimg
+    def get_darkimg(self,world):
+        return self.darkimg
     def mupdate(self,world):
         if self.xoff>0:
             self.xoff-=self.speed

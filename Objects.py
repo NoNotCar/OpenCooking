@@ -267,6 +267,7 @@ class Flipper(Counter):
 class Hob(Counter):
     img=img4("Cooker")
     darkimg = img4("CookerDark")
+    d3d = 4
     def can_place(self, item):
         return item.name in ("Pot","Pan")
     def on_place(self,world):
@@ -287,8 +288,11 @@ class Hob(Counter):
 class Grill(Hob):
     img=img4("GrillBase")
     oimgs=[img4("GrillTop"+s) for s in ["Off","On"]]
+    darkimg=img4("GrillDark")
     on=False
     over3d = 8
+    d3d=8
+    ignore_dark_contents = True
     def can_place(self, item):
         return item.can_change_state("grilled")
     def on_place(self,world):
@@ -308,6 +312,9 @@ class Grill(Hob):
         self.on=False
     def get_overimg(self,world):
         return self.oimgs[self.on]
+    def get_darkimg(self,world):
+        if self.on:
+            return self.darkimg
 class ArrowHob(Hob):
     imgs=imgstrip4f("ArrowCooker",16)
     img=imgs[0]

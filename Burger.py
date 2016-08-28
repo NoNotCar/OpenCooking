@@ -5,7 +5,7 @@ import pygame
 import Img
 from BaseClasses import Item
 burgeritems=["Steak","Chicken"]+Sandwich.sandwichitems
-pizzaitems=Sandwich.sandwichitems[:]
+pizzaitems=Sandwich.sandwichitems[:]+["Steak"]
 pizzaitems.remove("Ketchup")
 class Burger(Food):
     topped=False
@@ -63,13 +63,13 @@ class Dough(GrillableFood):
     def __init__(self):
         self.contents=[]
     def combine(self, food):
-        if not any([food.utensil,self.state!="rolled"]):
+        if not any([food.utensil,self.state!="rolled",self.cookprog]):
             if food.name=="Ketchup":
                 self.sauced=True
                 self.re_img()
                 self.contents.append(food)
                 return True
-            if food.state != "normal" and food.name in pizzaitems and food.name not in self.get_names() and self.sauced:
+            if any([s in food.state for s in ["chopped","liquid","grated"]]) and food.name in pizzaitems and food.name not in self.get_names() and self.sauced:
                 self.contents.append(food)
                 self.re_img()
                 return True
