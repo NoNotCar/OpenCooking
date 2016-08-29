@@ -1,7 +1,7 @@
-from Food import Food
+from Food import Food, FryableFood
 from BaseClasses import Item
 import Img
-saladitems = ["Lettuce", "Cucumber","Carrot","Potato","Tomato","SaladCream"]
+saladitems = ["Lettuce", "Cucumber","Carrot","Tomato","SaladCream"]
 class SaladItem(Food):
     def pcombine(self, food, plate):
         if food.name in saladitems and self.state in ("chopped","liquid") and food.state in ("chopped","liquid"):
@@ -16,8 +16,35 @@ class Tomato(SaladItem):
 class Carrot(SaladItem):
     soupcolour = (255,101,0)
     scimg = Img.img4("SoupCarrot")
-class Potato(SaladItem):
+class Potato(FryableFood):
     soupcolour = (224,192,111)
+    ordermultiplier = 1.5
+    def combine(self, food):
+        if food.state=="liquid" and self.state=="grated+fried":
+            if not self.contents:
+                self.contents=[self,food]
+            elif food.name not in [f.name for f in self.contents]:
+                self.contents.append(food)
+            else:
+                return False
+            self.re_img()
+            return True
+    def re_img(self):
+        self.img=self.stateimgs[self.state].copy()
+        if self.contents:
+            for f in sorted(self.contents):
+                if f is not self:
+                    self.img.blit(f.get_img(),(0,0))
+    def get_img(self):
+        if self.state=="grated+fried" and self.contents:
+            return self.img
+        else:
+            return FryableFood.get_img(self)
+    def maketag(self):
+        if self.state=="grated+fried" and self.contents:
+            return "Chips:"+",".join([f.maketag() for f in sorted(self.contents) if f is not self])
+        else:
+            return "Potato"+self.state
 class SaladCream(Food):
     name="SaladCream"
     img=Img.img4("SaladCream")

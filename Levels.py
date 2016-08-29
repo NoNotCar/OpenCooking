@@ -95,7 +95,15 @@ def world_3(level):
     oc.append(Burger.BunTop())
     return oc
 def world_4(level):
-    return world_1(3)
+    if level==1:
+        return world_1(3)
+    oc=[]
+    oc.append(Salad.Potato("grated+fried"))
+    if randint(0,1):
+        oc.append(Sandwich.Ketchup("liquid"))
+    if randint(0,1):
+        oc.append(Sandwich.Mustard("liquid"))
+    return oc
 def randomsoup(soupings,allow_cheese):
     soupitems = []
     for _ in range(3):
@@ -145,5 +153,5 @@ def pizza(pizzings,chance):
 orderers=[world_1,world_2,world_3,world_4]
 haunted=[(3,4),(3,10),(4,1)]
 outdoors=[(3,5),(3,6)]
-snowy=[(4,1)]
+snowy=[(4,1),(4,2)]
 tutorials={(1,1):"Salad",(1,6):"Sandwich"}

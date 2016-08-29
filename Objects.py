@@ -319,6 +319,20 @@ class Grill(Hob):
     def get_darkimg(self,world):
         if self.on:
             return self.darkimg
+class Fryer(Hob):
+    img=img4("Fryer")
+    cookingimgs=imgstrip4f("FryerCooking",16)
+    render_contents = False
+    def can_place(self, item):
+        return item.name=="Basket"
+    def update(self,world,events):
+        if self.contents:
+            self.contents.heat()
+            if self.contents.contents:
+                self.warn=self.contents.contents.warn
+                self.progress=self.contents.contents.progress
+    def get_img(self,world):
+        return self.cookingimgs[world.anitick//4%4] if self.contents else self.img
 class ArrowHob(Hob):
     imgs=imgstrip4f("ArrowCooker",16)
     img=imgs[0]

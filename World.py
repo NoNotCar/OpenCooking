@@ -107,7 +107,7 @@ class World(object):
                         screen.blit(o.himg, (x * 64 + o.xoff + 16, y * 64 + o.yoff + 64 - o.o3d * 4 + 24))
                     if o.img:
                         screen.blit(o.get_img(self),(x*64+o.xoff,y*64+o.yoff+64-o.o3d*4))
-                    if o.contents:
+                    if o.contents and o.render_contents:
                         corenders.append((o,"c"))
                     if o.progress is not None:
                         prenders.append(o)

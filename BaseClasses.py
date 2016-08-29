@@ -10,6 +10,7 @@ class Object(object):
     over3d=0
     d3d=0
     ignore_dark_contents=False
+    render_contents=True
     name="Object"
     updates=False
     dx=0

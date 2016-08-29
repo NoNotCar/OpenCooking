@@ -12,7 +12,7 @@ class Food(Item):
         cls.img=Img.img4(name)
         cls.stateimgs={"normal":cls.img}
         cls.raw_img=Img.imgsz(name,(32,32))
-        for s in ["chopped","grated","cooked","hammered","grilled","rolled","hammered+cooked","cooked+chopped"]:
+        for s in ["chopped","grated","cooked","hammered","grilled","rolled","hammered+cooked","cooked+chopped","grated+fried"]:
             try:
                 cls.stateimgs[s]=Img.img4("".join([ss.capitalize() for ss in s.split("+")])+name)
                 cls.validstates.append(s)
@@ -78,6 +78,27 @@ class GrillableFood(Food):
             self.warn=True
         else:
             return True
+class FryableFood(Food):
+    cookingtime=600
+    burningtime=300
+    progress=None
+    warn=None
+    cookprog=0
+    burnprog=0
+    def fry(self):
+        #Heat the food. Returns true if food changes state
+        if self.cookprog<self.cookingtime:
+            self.cookprog+=1
+            self.progress=self.cookprog*14//self.cookingtime
+            self.warn=False
+            if self.cookprog==self.cookingtime:
+                self.set_state("fried")
+                return True
+        elif self.burnprog<self.burningtime:
+            self.burnprog+=1
+            self.warn=True
+        else:
+            return True
 class Plate(Item):
     name="Plate"
     dirty=False
@@ -91,7 +112,7 @@ class Plate(Item):
                 food.contents=None
                 self.re_img()
                 food.re_img()
-            elif food.name=="Pan" and food.contents:
+            elif food.name in "PanBasket" and food.contents:
                 self.contents = food.contents
                 food.contents = None
                 self.re_img()

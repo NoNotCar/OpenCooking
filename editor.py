@@ -1,5 +1,5 @@
 import pygame, sys
-size=13,9
+size=13,11
 loadfile=None
 pygame.init()
 screen = pygame.display.set_mode((max([size[0],18])*64, size[1]*64+192))
@@ -71,13 +71,13 @@ if loadfile:
 clock = pygame.time.Clock()
 selmenu=0
 tilemenus=[[0,1,2,3],[4,5,6,7,8]]
-objmenus=[FoodIter(Objects.Counter,[Food.Plate,Salad.SaladBottle,Sandwich.MustardBottle,Sandwich.KetchupBottle,Soup.Pot,Breakfast.Pan]),
+objmenus=[FoodIter(Objects.Counter,[Food.Plate,Salad.SaladBottle,Sandwich.MustardBottle,Sandwich.KetchupBottle,Soup.Pot,Breakfast.Pan,Breakfast.Basket]),
           MultiIter(Objects.FoodExit,Objects.Returner),
           FoodIter(Objects.Spawner,[Salad.Cucumber,Salad.Lettuce,Salad.Tomato,Salad.Carrot,Salad.Potato],False),
           FoodIter(Objects.Spawner,[Sandwich.Bread,Sandwich.Cheese,Burger.Burger,Burger.BunTop,Breakfast.Steak,Burger.Chicken,Burger.Dough],False),
-          EditorIter(Objects.Trash),MultiIter(Objects.ChoppingBoard,Objects.Grater,Objects.HammerBoard,Objects.Hob,Objects.Grill,Objects.RollingBoard),
+          EditorIter(Objects.Trash),MultiIter(Objects.ChoppingBoard,Objects.Grater,Objects.HammerBoard,Objects.Hob,Objects.Grill,Objects.RollingBoard,Objects.Fryer),
           EditorIter(Objects.Sink),MultiIter(Objects.Button,Objects.Flipper),SpinIter(Objects.ArrowBlock),SpinIter(Objects.ArrowHob),
-          SpinIter(Objects.SpawnMan,8),MultiIter(Objects.Wall,Objects.Tree),SpinIter(Objects.Conveyor),SpinIter(Objects.MultiArrowBlock),MultiIter(Objects.FixedCounter,Objects.FlickerLight),
+          SpinIter(Objects.SpawnMan,8),MultiIter(Objects.Wall),SpinIter(Objects.Conveyor),SpinIter(Objects.MultiArrowBlock),MultiIter(Objects.FixedCounter,Objects.FlickerLight),
           SpinIter(Objects.SpawnPerson)]
 seltiles=[0 for _ in tilemenus]
 while True:

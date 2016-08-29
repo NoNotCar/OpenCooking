@@ -30,6 +30,31 @@ class Pan(Item):
                     self.re_img()
     def maketag(self):
         return "Pan:"+self.contents.maketag() if self.contents else "empty"
+class Basket(Item):
+    img=Img.img4("Basket")
+    o3d=4
+    name="Basket"
+    def combine(self, food):
+        if food.can_change_state("fried") and not self.contents:
+            self.contents=food
+            self.re_img()
+            return True
+    def re_img(self):
+        if self.contents:
+            self.img=self.__class__.img.copy()
+            self.img.blit(self.contents.get_img(),(0,0))
+        else:
+            self.img=self.__class__.img
+    def heat(self):
+        if self.contents:
+            if self.contents.fry():
+                if self.contents.burnprog:
+                    self.contents=None
+                    self.re_img()
+                else:
+                    self.re_img()
+    def maketag(self):
+        return "Basket:"+self.contents.maketag() if self.contents else "empty"
 class Steak(CookableFood):
     ordermultiplier = 1.5
     hammerable = True
