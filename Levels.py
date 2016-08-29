@@ -94,6 +94,8 @@ def world_3(level):
                 oc.append(e("chopped"))
     oc.append(Burger.BunTop())
     return oc
+def world_4(level):
+    return world_1(3)
 def randomsoup(soupings,allow_cheese):
     soupitems = []
     for _ in range(3):
@@ -140,7 +142,8 @@ def pizza(pizzings,chance):
     npizza=Burger.Dough()
     npizza.order_init(pizzitems)
     return [npizza]
-orderers=[world_1,world_2,world_3]
-haunted=[(3,4),(3,10)]
+orderers=[world_1,world_2,world_3,world_4]
+haunted=[(3,4),(3,10),(4,1)]
 outdoors=[(3,5),(3,6)]
+snowy=[(4,1)]
 tutorials={(1,1):"Salad",(1,6):"Sandwich"}

@@ -8,6 +8,7 @@ import Img
 import Controllers
 import World
 import Players
+import Objects
 import os
 import pickle
 import Levels
@@ -19,7 +20,7 @@ clock = pygame.time.Clock()
 tickimg=Img.img4("Tick")
 crossimg=Img.img4("Null")
 cols=((255,0,0),(0,255,0),(0,0,255),(255,255,0),(255,0,255),(0,255,255),(255,128,0),(255,128,255))
-men=("Man","FMan","TMan","SMan","ManBot","ManBlack","Slime","Penguin","Woman","CatThing","Illuminati")
+men=Objects.men
 pimgs=[[Img.new_man(mt,col)[2] for col in cols] for mt in men]
 mimgs=[Img.new_man(random.choice(men),(random.randint(0,255),random.randint(0,255),random.randint(0,255)))[2] for _ in xrange(31)]
 breaking = False
@@ -164,6 +165,9 @@ while True:
         backcolour=(10,10,10)
     if alevel in Levels.outdoors:
         dj.switch("Outdoor")
+        backcolour=(105,211,211)
+    if alevel in Levels.snowy:
+        dj.switch("Snow")
         backcolour=(105,211,211)
     if alevel in Levels.tutorials.keys():
         tutorial=Img.img4("Tutorial/Tut"+Levels.tutorials[alevel])

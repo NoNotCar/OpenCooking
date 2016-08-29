@@ -191,6 +191,7 @@ class EditWorld(World):
     ur={}
     def __init__(self,size,load=None):
         self.size=size
+        self.loadfile=False
         if load:
             self.load(load)
             self.loadfile=load

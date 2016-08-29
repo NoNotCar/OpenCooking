@@ -51,6 +51,8 @@ class Object(object):
             self.yoff=0
             self.moving=False
             self.locked=False
+            if world.get_t(self.x,self.y).slippery:
+                self.move(self.dx,self.dy,world)
     def move(self,dx,dy,world):
         if self.can_move(dx,dy,world):
             self.ex_move(dx,dy,world)

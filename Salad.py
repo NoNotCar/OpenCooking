@@ -22,6 +22,7 @@ class SaladCream(Food):
     name="SaladCream"
     img=Img.img4("SaladCream")
     raw_img=Img.imgsz("SaladBottle",(32,32))
+    removable = False
     def get_img(self):
         return self.img
 class SaladBottle(Item):

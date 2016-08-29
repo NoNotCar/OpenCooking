@@ -26,4 +26,7 @@ class Wasser(Tile):
     backwall = blank64
 class OutdoorFloor(Floor):
     backwall = blank64
-tiles=[Floor("Floor"),NS_Floor("NoSpawnFloor"),Pit(),Floor("HauntedFloor","HauntedBackWall"),Wasser(),OutdoorFloor("Grass"),OutdoorFloor("Sand")]
+class Ice(Tile):
+    img=img4("Tiles/Ice")
+    slippery = True
+tiles=[Floor("Floor"),NS_Floor("NoSpawnFloor"),Pit(),Floor("HauntedFloor","HauntedBackWall"),Wasser(),OutdoorFloor("Grass"),OutdoorFloor("Sand"),Ice(),OutdoorFloor("Snow")]

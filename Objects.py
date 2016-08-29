@@ -1,9 +1,10 @@
 from BaseClasses import Object
-from Img import img4, sndget, imgstrip4f, colcopy, imgstrip4, blank64, imgrot, new_man
+from Img import img4, sndget, imgstrip4f, colcopy, imgstrip4, blank64, imgrot, new_man, np, loc
 import Food
 import Direction as D
 import pygame
 from random import randint, choice
+import os
 chop=sndget("chop")
 hit=sndget("hit")
 wash=sndget("wash")
@@ -13,6 +14,9 @@ grate=sndget("grate")
 roll=sndget("roll")
 pon=sndget("poweron")
 poff=sndget("poweroff")
+emen=os.listdir(np(loc+"ExMen/"))
+emen=["ExMen/"+e[:-4] for e in emen if e[-4:]==".png"]
+men=["Man","FMan","TMan","SMan","ManBot","ManBlack","Slime","Penguin","Woman","CatThing","Illuminati"]+emen
 class Counter(Object):
     img=img4("Counter")
     o3d=4
@@ -492,7 +496,7 @@ class Person(Object):
     real=True
     def __init__(self,x,y,d):
         self.place(x,y)
-        mt=choice(("Man","FMan","TMan","SMan","ManBot","ManBlack","Slime","Penguin","Woman","CatThing","Illuminati"))
+        mt=choice(men)
         col=(randint(0,255),randint(0,255),randint(0,255))
         self.img=new_man(mt,col)[d]
         self.d=d

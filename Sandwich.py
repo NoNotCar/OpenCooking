@@ -57,6 +57,7 @@ class Ketchup(Food):
     img=Img.img4("Ketchup")
     raw_img=Img.imgsz("KetchupBottle",(32,32))
     soupcolour = (255,0,0)
+    removable = False
     def get_img(self):
         return self.img
 class KetchupBottle(Item):
@@ -68,6 +69,7 @@ class Mustard(Food):
     img=Img.img4("Mustard")
     raw_img=Img.imgsz("MustardBottle",(32,32))
     soupcolour = (255,216,0)
+    removable = False
     def get_img(self):
         return self.img
 class MustardBottle(Item):
