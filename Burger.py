@@ -4,7 +4,7 @@ import Sandwich
 import pygame
 import Img
 from BaseClasses import Item
-burgeritems=["Steak","Chicken"]+Sandwich.sandwichitems
+burgeritems=["Steak","Chicken"]+Sandwich.sandwichitems[:-1]
 pizzaitems=Sandwich.sandwichitems[:]+["Steak"]
 pizzaitems.remove("Ketchup")
 class Burger(Food):

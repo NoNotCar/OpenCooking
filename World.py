@@ -8,6 +8,7 @@ cashfont=Img.fload("cool",32)
 bcfont=Img.fload("cool",64)
 fail=Img.sndget("fail")
 button=Img.sndget("button")
+dorderprob=3
 class World(object):
     reordermult=0.7
     cash=0
@@ -15,11 +16,13 @@ class World(object):
     button=False
     anitick=0
     dark=False
+    fxg=None
     def __init__(self,ps,n):
         self.ps=ps
         self.uos=[]
         self.ucs=[]
         self.ur={}
+        self.fx=[]
         self.level=(n-1)%10+1
         self.world=(n-1)//10+1
         manualspawn=False
@@ -62,7 +65,7 @@ class World(object):
                 if o and o.moving:
                     o.mupdate(self)
         for o in self.orders[:]:
-            o.time-=1
+            o.tick()
             if o.time==0:
                 self.orders.remove(o)
                 self.cash-=5
@@ -73,11 +76,16 @@ class World(object):
                     self.tonextorder = int(self.orders[-1].time*self.reordermult)
         self.tonextorder-=1
         if self.tonextorder==0:
-            self.orders.append(Levels.new_order(self.level,self.world))
-            self.tonextorder = int(self.orders[-1].time*self.reordermult)
+            self.order()
         for r in self.returned:
             if r[1]:
                 r[1]-=1
+        if self.fxg:
+            self.fxg(self)
+        for fx in self.fx[:]:
+            fx.update(self)
+            if fx.x<-100 or fx.x>self.size[0]*64+100 or fx.y<-100 or fx.y>self.size[1]*64+100:
+                self.fx.remove(fx)
     def load(self,file):
         with open(Img.loc + "saves/%s.lvl" % file, "rb") as sf:
             savobj = pickle.load(sf)
@@ -127,6 +135,8 @@ class World(object):
             screen.blit(
                 (Img.progresses, Img.wprogresses)[o.warn][0 if o.warn and self.anitick // 15 % 2 else o.progress],
                 (o.x * 64 + o.xoff, o.y * 64 + o.yoff + 40 - o.o3d * 4))
+        for fx in self.fx:
+            screen.blit(fx.img,(fx.x,fx.y))
     def get_t(self,x,y):
         return Tiles.tiles[self.t[x][y]]
     def get_o(self,x,y):
@@ -171,11 +181,20 @@ class World(object):
             self.uos.remove(o)
     def remove_order(self,o):
         self.orders.remove(o)
+        if o.double:
+            self.cash+=sum([len(o.c) for o in o.os])*5
         self.cash+=len(o.c)*5
         if not self.orders:
-            self.orders.append(Levels.new_order(self.level,self.world))
             self.reordermult-=0.05
-            self.tonextorder=int(self.orders[-1].time*self.reordermult)
+            self.order()
+    def order(self):
+        if randint(0,dorderprob):
+            self.orders.append(Levels.new_order(self.level, self.world))
+            self.tonextorder = int(self.orders[-1].time * self.reordermult)
+        else:
+            self.orders.append(Levels.new_order(self.level, self.world, True))
+            self.orders.append(Levels.new_order(self.level, self.world, True))
+            self.tonextorder = int(max([o.time for o in self.orders[-2:]]) * self.reordermult)
     def p_button(self):
         self.button=not self.button
         button.play()
@@ -189,6 +208,7 @@ class SaveObject(object):
         self.w=w
 class EditWorld(World):
     ur={}
+    fx=[]
     def __init__(self,size,load=None):
         self.size=size
         self.loadfile=False

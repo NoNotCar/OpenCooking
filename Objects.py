@@ -100,11 +100,20 @@ class Trash(Object):
         return True
 class FoodExit(Object):
     img=img4("Exit")
+    cimg = imgstrip4f("ComboExit", 16)[0]
     o3d = 4
     reverse = False
+    combo=False
+    name="Exit"
     def on_place(self,world):
         for o in world.orders:
-            if o.plate==self.contents:
+            if o.double:
+                if self.combo and self.contents==o.os[0].plate and self.combo.contents and self.combo.contents==o.os[1].plate:
+                    self.fx = 1
+                    self.locked = True
+                    self.order = o
+                    break
+            elif o.plate==self.contents:
                 self.fx=1
                 self.locked=True
                 self.order=o
@@ -124,6 +133,8 @@ class FoodExit(Object):
                     if self.order in world.orders:
                         world.remove_order(self.order)
                         self.contents = None
+                        if self.order.double:
+                            self.combo.contents=None
                         world.del_updates(self)
                         money.play()
                         self.locked=False
@@ -135,7 +146,12 @@ class FoodExit(Object):
                         self.order=None
         elif self.contents:
             for o in world.orders:
-                if o.plate == self.contents:
+                if o.double:
+                    if self.combo and self.contents == o.os[0].plate and self.combo.contents and self.combo.contents == o.os[1].plate:
+                        self.fx = 1
+                        self.locked = True
+                        self.order = o
+                elif o.plate == self.contents:
                     self.fx = 1
                     self.locked = True
                     self.order = o
@@ -144,6 +160,20 @@ class FoodExit(Object):
         else:
             self.locked=False
             world.del_updates(self)
+    def get_img(self,world):
+        return self.cimg if self.combo else self.img
+class ComboExit(Object):
+    img=imgstrip4f("ComboExit",16)[1]
+    o3d = 4
+    updates=True
+    nexit=None
+    def update(self,world,events):
+        if not self.nexit:
+            self.nexit=world.get_o(self.x,self.y-1)
+            assert self.nexit and self.nexit.name=="Exit", "NO EXIT FOUND"
+            self.nexit.combo=self
+        self.fx=self.nexit.fx if self.contents else 0
+
 class Returner(Object):
     img=img4("Entrance")
     o3d = 4

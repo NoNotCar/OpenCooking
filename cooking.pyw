@@ -2,7 +2,8 @@ __author__ = 'NoNotCar'
 import pygame, sys
 pygame.init()
 pygame.font.init()
-screen = pygame.display.set_mode((1920,1080),pygame.FULLSCREEN)
+screen=pygame.display.Info()
+screen = pygame.display.set_mode((screen.current_w,screen.current_h),pygame.FULLSCREEN)
 screen.convert()
 import Img
 import Controllers
@@ -13,6 +14,7 @@ import os
 import pickle
 import Levels
 import random
+import  FX
 from math import sin, radians
 tfont=Img.fload("cool",64)
 sfont=Img.fload("cool",32)
@@ -137,22 +139,24 @@ while True:
         except KeyError:
             Img.bcentre(sfont, "%s-%s" % (str(n//10+1),str(n%10+1)), img, -5)
         limgs.append(img)
+    rects = []
     while not breaking:
         for e in pygame.event.get():
             check_exit(e)
             if e.type==pygame.MOUSEBUTTONDOWN:
                 mx,my=pygame.mouse.get_pos()
-                x=(mx-32)%96
-                y=(mx-400)%96
-                if 0<y<64 and 0<x<64:
-                    level=(mx-32)//96+1+(my-400)//96*10
-                    if level<=maxlevel:
+                for r,n in rects:
+                    if r.collidepoint((mx,my)):
+                        level=n+1
                         breaking=True
                         break
         screen.fill((255,255,0))
         Img.bcentrex(tfont,"SELECT LEVEL",screen,64)
+        recting=not rects
         for n,l in enumerate(limgs):
-            screen.blit(l,(n%10*96+32,400+n//10*96))
+            r=Img.cxblit(l,screen,400+n//10*96,n%10*96-464)
+            if recting:
+                rects.append((r,n))
         pygame.display.flip()
     players=[Players.Player(0,0, cols[rsps[n]],men[ordermans[n]], rsc[n]) for n in range(len(rsc))]
     w=World.World(players,level)
@@ -169,6 +173,7 @@ while True:
     if alevel in Levels.snowy:
         dj.switch("Snow")
         backcolour=(105,211,211)
+        w.fxg=FX.snowgen
     if alevel in Levels.tutorials.keys():
         tutorial=Img.img4("Tutorial/Tut"+Levels.tutorials[alevel])
     superrect=pygame.Rect(0,0,w.size[0]*64,w.size[1]*64+64)
@@ -212,7 +217,7 @@ while True:
         ox=2
         for o in w.orders:
             uprects.append(o.render(screen,(ox,2)))
-            ox+=2+o.img.get_rect().width
+            ox+=2+o.width
         if pausing:
             Img.bcentre(tfont,"PAUSED",screen)
             pygame.display.flip()

@@ -1,12 +1,14 @@
-from Orders import Order
+from Orders import Order, DoubleOrder
 from random import randint, choice
 import Salad
 import Sandwich
 import Soup
 import Breakfast
 import Burger
-def new_order(level,world):
-    return Order(orderers[world-1](level))
+def new_order(level,world, double=False):
+    if (world,level) in combo:
+        return DoubleOrder([Order(c, double) for c in orderers[world-1](level)])
+    return Order(orderers[world-1](level),double)
 def world_1(level):
     oc = []
     breading=randint(0, 2) and level>5
@@ -103,7 +105,10 @@ def world_4(level):
         oc.append(Sandwich.Ketchup("liquid"))
     if randint(0,1):
         oc.append(Sandwich.Mustard("liquid"))
-    return oc
+    if level<3:
+        return oc
+    else:
+        return world_3(1),oc
 def randomsoup(soupings,allow_cheese):
     soupitems = []
     for _ in range(3):
@@ -154,4 +159,5 @@ orderers=[world_1,world_2,world_3,world_4]
 haunted=[(3,4),(3,10),(4,1)]
 outdoors=[(3,5),(3,6)]
 snowy=[(4,1),(4,2)]
+combo=[(4,3)]
 tutorials={(1,1):"Salad",(1,6):"Sandwich"}

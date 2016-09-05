@@ -1,6 +1,6 @@
 import pygame, sys
 size=13,11
-loadfile=None
+loadfile="4-3"
 pygame.init()
 screen = pygame.display.set_mode((max([size[0],18])*64, size[1]*64+192))
 import World
@@ -72,7 +72,7 @@ clock = pygame.time.Clock()
 selmenu=0
 tilemenus=[[0,1,2,3],[4,5,6,7,8]]
 objmenus=[FoodIter(Objects.Counter,[Food.Plate,Salad.SaladBottle,Sandwich.MustardBottle,Sandwich.KetchupBottle,Soup.Pot,Breakfast.Pan,Breakfast.Basket]),
-          MultiIter(Objects.FoodExit,Objects.Returner),
+          MultiIter(Objects.FoodExit,Objects.Returner,Objects.ComboExit),
           FoodIter(Objects.Spawner,[Salad.Cucumber,Salad.Lettuce,Salad.Tomato,Salad.Carrot,Salad.Potato],False),
           FoodIter(Objects.Spawner,[Sandwich.Bread,Sandwich.Cheese,Burger.Burger,Burger.BunTop,Breakfast.Steak,Burger.Chicken,Burger.Dough],False),
           EditorIter(Objects.Trash),MultiIter(Objects.ChoppingBoard,Objects.Grater,Objects.HammerBoard,Objects.Hob,Objects.Grill,Objects.RollingBoard,Objects.Fryer),
