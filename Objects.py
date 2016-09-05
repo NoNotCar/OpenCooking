@@ -135,6 +135,9 @@ class FoodExit(Object):
                         self.contents = None
                         if self.order.double:
                             self.combo.contents=None
+                            plate = Food.Plate()
+                            plate.dirty = world.washing
+                            world.returned.append([plate, 360])
                         world.del_updates(self)
                         money.play()
                         self.locked=False
